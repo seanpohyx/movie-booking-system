@@ -1,6 +1,6 @@
 package com.example.booking.auditorium;
 
-import com.example.booking.joined.SeatAuditorium;
+import com.example.booking.seatAuditorium.SeatAuditorium;
 import com.example.booking.screening.Screening;
 import lombok.*;
 

@@ -1,6 +1,5 @@
 package com.example.booking.auditorium;
 
-import com.example.booking.student.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class AuditoriumService {
         this.repository = repository;
     }
 
-    public List<Auditorium> getAuditorium() {
+    public List<Auditorium> getAuditoriums() {
         return this.repository.findAll();
     }
 
@@ -46,7 +45,7 @@ public class AuditoriumService {
     public Auditorium updateAuditorium(Long id, Integer numberOfSeats) {
 
         Auditorium auditorium = this.repository.findById(id).orElseThrow(
-                ()-> new IllegalStateException("Auditorium with Id " + id + "does not exists"));
+                ()-> new IllegalStateException("Auditorium with Id " + id + " does not exists"));
 
         auditorium.setNumberOfSeats(numberOfSeats);
         return this.repository.save(auditorium);

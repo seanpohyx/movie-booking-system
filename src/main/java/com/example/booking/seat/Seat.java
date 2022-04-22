@@ -1,6 +1,6 @@
 package com.example.booking.seat;
 
-import com.example.booking.joined.SeatAuditorium;
+import com.example.booking.seatAuditorium.SeatAuditorium;
 import lombok.*;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package com.example.booking.seatBoooking;
 
-import com.example.booking.joined.SeatAuditorium;
+import com.example.booking.seatAuditorium.SeatAuditorium;
 import com.example.booking.screening.Screening;
 import com.example.booking.seat.SeatId;
 import com.example.booking.account.Account;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

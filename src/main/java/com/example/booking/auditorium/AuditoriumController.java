@@ -23,7 +23,7 @@ public class AuditoriumController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping(path="{auditoriumId}")
+    @GetMapping(path="/{auditoriumId}")
     public ResponseEntity<AuditoriumDto> getAuditoriumById(@PathVariable("auditoriumId") Long id){
         return ResponseEntity.ok().body(convertToDTO(this.service.getAuditoriumById(id)));
     }
@@ -31,7 +31,7 @@ public class AuditoriumController {
     @GetMapping
     public ResponseEntity<List<AuditoriumDto>> getAuditorium(){
         return ResponseEntity.ok().body(
-                this.service.getAuditorium().stream()
+                this.service.getAuditoriums().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
     }

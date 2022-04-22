@@ -2,12 +2,11 @@ package com.example.booking.shared;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
-import com.example.booking.joined.SeatAuditorium;
-import com.example.booking.joined.SeatAuditoriumCK;
-import com.example.booking.joined.SeatAuditoriumRepository;
+import com.example.booking.seatAuditorium.SeatAuditorium;
+import com.example.booking.seatAuditorium.SeatAuditoriumCK;
+import com.example.booking.seatAuditorium.SeatAuditoriumRepository;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
-import com.example.booking.screening.Screening;
 import com.example.booking.seat.Seat;
 import com.example.booking.seat.SeatId;
 import com.example.booking.seat.SeatRepository;

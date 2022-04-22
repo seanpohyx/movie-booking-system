@@ -1,4 +1,4 @@
-package com.example.booking.joined;
+package com.example.booking.seatAuditorium;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.seat.Seat;

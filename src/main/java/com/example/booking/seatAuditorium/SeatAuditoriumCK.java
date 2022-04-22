@@ -1,4 +1,4 @@
-package com.example.booking.joined;
+package com.example.booking.seatAuditorium;
 
 import com.example.booking.seat.SeatId;
 import lombok.*;
@@ -6,7 +6,6 @@ import org.hibernate.annotations.Columns;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import java.io.Serializable;
 
 @Setter

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ScreeningService {
@@ -32,9 +31,9 @@ public class ScreeningService {
         return this.screeningRepository.findAll();
     }
 
-    public Boolean isScreeningExist(long auditoriumId, long showtime, long duration, long movieId){
+    public Boolean isScreeningExist(long auditoriumId, long showtime, long duration){
 
-        if(this.screeningRepository.existsByAuditoriumIdAndShowTime(auditoriumId, showtime, duration*60, movieId).isPresent())
+        if(this.screeningRepository.findScreeningThatClashesBetweenShowTime(auditoriumId, showtime, duration*60).isPresent())
             return true;
         else
             return false;
@@ -49,7 +48,7 @@ public class ScreeningService {
                 ()-> new IllegalStateException(
                         "id " + screeningDto.getMovieId() + " does not exist for movie table."));
 
-        if(isScreeningExist(screeningDto.getAuditoriumId(), screeningDto.getShowTime(), movie.getDuration(), movie.getMovieId())){
+        if(isScreeningExist(screeningDto.getAuditoriumId(), screeningDto.getShowTime(), movie.getDuration())){
             throw new RuntimeException("Existing showtime for this auditorium for timing " + screeningDto.getShowTime()
                 + " in auditorium id: " + screeningDto.getAuditoriumId());
         }
@@ -124,7 +123,7 @@ public class ScreeningService {
         }
 
 
-        if(isScreeningExist(auditorium.getAuditoriumId(), newShowTime, movie.getDuration(), movie.getMovieId())){
+        if(isScreeningExist(auditorium.getAuditoriumId(), newShowTime, movie.getDuration())){
             throw new RuntimeException("Existing showtime for this auditorium for timing " + newShowTime
                     + " in auditorium id: " + auditorium.getAuditoriumId());
         }

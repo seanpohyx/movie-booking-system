@@ -33,21 +33,21 @@ public class MovieController {
 
     @GetMapping(path = {"{movieId}"})
     public ResponseEntity<MovieDto> getMovie(@PathVariable Long movieId){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/movie").toUriString());
-        return ResponseEntity.created(uri).body(convertToDTO(this.service.getMovieById(movieId)));
+        return ResponseEntity.ok().body(convertToDTO(this.service.getMovieById(movieId)));
     }
 
     @GetMapping(path="latest")
     public ResponseEntity<List<MovieDto>> getLatestMovie(){
-        return ResponseEntity.ok().body(this.service.getLatestMovie().stream()
+        return ResponseEntity.ok().body(this.service.getNowShowing().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
     }
 
     @PostMapping
     public ResponseEntity<MovieDto> addMovie(@RequestBody MovieDto movieDto){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/movie").toUriString());
         Movie movie = this.service.addNewMovie(convertToEntity(movieDto));
-        return ResponseEntity.ok().body(convertToDTO(movie));
+        return ResponseEntity.created(uri).body(convertToDTO(movie));
     }
 
     @DeleteMapping(path="{movieId}")
@@ -74,9 +74,8 @@ public class MovieController {
                             @RequestParam(required = false) LocalDate endDateTime){
 
         try {
-            return ResponseEntity.ok().body(
-                    convertToDTO(
-                            this.service.updateMovie(movieId, title, description, duration, casts, startDate, endDateTime)));
+            this.service.updateMovie(movieId, title, description, duration, casts, startDate, endDateTime);
+            return ResponseEntity.noContent().build();
         }
             catch (IllegalStateException e){
             return ResponseEntity.badRequest().build();

@@ -24,9 +24,8 @@ public class MovieService {
         return this.repository.findAll();
     }
 
-    public List<Movie> getLatestMovie() {
-
-        return this.repository.findLastestMovie(LocalDate.now());
+    public List<Movie> getNowShowing() {
+        return this.repository.findNowShowing(LocalDate.now());
     }
 
     public Movie addNewMovie(Movie movie) {
@@ -46,7 +45,7 @@ public class MovieService {
     }
 
     @Transactional
-    public Movie updateMovie(Long id, String title, String description, Integer duration, String casts,
+    public void updateMovie(Long id, String title, String description, Integer duration, String casts,
                              LocalDate startDate, LocalDate endDate) {
 
         long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
@@ -54,7 +53,6 @@ public class MovieService {
         Movie movie = this.repository.findById(id).orElseThrow(
                 ()-> new IllegalStateException(
                         "Movie with Id " + id + " does not exists"));
-
 
         if(title != null &&
                 title.length() > 0 &&
@@ -92,7 +90,7 @@ public class MovieService {
 
         movie.setUpdatedDateTime(epochTimeNow);
 
-        return this.repository.save(movie);
+        this.repository.save(movie);
 
     }
 
