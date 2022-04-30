@@ -1,7 +1,5 @@
 package com.example.booking.seat;
 
-import com.example.booking.movie.Movie;
-import com.example.booking.movie.MovieDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +25,15 @@ public class SeatController {
 
     @GetMapping
     public ResponseEntity<List<SeatDto>> getSeat(){
-        return ResponseEntity.ok().body(this.service.getSeat().stream()
+        return ResponseEntity.ok().body(this.service.getSeats().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
     }
 
     @PostMapping
     public ResponseEntity<SeatDto> addSeats(@RequestBody SeatDto seatDto){
-
-        try{
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/seat").toUriString());
-            return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewSeat(seatDto)));
-        }
-        catch (IllegalStateException e){
-            return  ResponseEntity.badRequest().build();
-        }
-
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/seat").toUriString());
+        return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewSeat(seatDto)));
     }
 
     @DeleteMapping(path="/{rowId}/{seatNumber}")
@@ -52,9 +43,10 @@ public class SeatController {
             this.service.deleteSeat(rowId, seatNumber);
             return ResponseEntity.noContent().build();
         }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
+        catch (Exception e){
+            return ResponseEntity.internalServerError().build();
         }
+
     }
 
     @PutMapping(path="/{rowId}/{seatId}")
@@ -65,11 +57,13 @@ public class SeatController {
                                      @RequestParam(required = false) BigDecimal cost){
 
         try {
-            return ResponseEntity.ok().body(convertToDTO(this.service.updateSeat(rowId, seatId, rowNumber, seatNumber, cost)));
+            this.service.updateSeat(rowId, seatId, rowNumber, seatNumber, cost);
+            return ResponseEntity.noContent().build();
         }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
+        catch (Exception e){
+            return ResponseEntity.internalServerError().build();
         }
+
     }
 
     public SeatDto convertToDTO(Seat seat) {

@@ -5,6 +5,7 @@ import com.example.booking.movie.Movie;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -36,4 +37,17 @@ public class Screening {
     @ManyToOne
     @JoinColumn(name = "auditoriumId", nullable = false)
     private Auditorium auditorium;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Screening screening = (Screening) o;
+        return screeningId == screening.screeningId && showTime == screening.showTime && Objects.equals(movie, screening.movie) && Objects.equals(auditorium, screening.auditorium);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(screeningId, showTime, movie, auditorium);
+    }
 }

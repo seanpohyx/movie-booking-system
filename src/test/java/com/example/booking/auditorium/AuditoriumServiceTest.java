@@ -1,5 +1,6 @@
 package com.example.booking.auditorium;
 
+import com.example.booking.exception.BadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -109,7 +110,7 @@ class AuditoriumServiceTest {
         //when
         //then
         assertThatThrownBy(() -> this.underTest.getAuditoriumById(id))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Auditorium with Id " + id + " does not exists");
     }
 
@@ -124,7 +125,7 @@ class AuditoriumServiceTest {
 
         //then
         assertThatThrownBy(() -> this.underTest.deleteAuditorium(id))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Auditorium with Id " + id + " does not exists");
     }
 
@@ -168,7 +169,7 @@ class AuditoriumServiceTest {
 
         //then
         assertThatThrownBy(() -> this.underTest.updateAuditorium(id, numberOfSeats))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Auditorium with Id " + id + " does not exists");
 
     }

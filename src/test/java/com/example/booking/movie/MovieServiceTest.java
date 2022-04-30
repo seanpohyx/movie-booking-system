@@ -1,5 +1,7 @@
 package com.example.booking.movie;
 
+import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.MovieNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -112,7 +114,7 @@ class MovieServiceTest {
         //when
         //then
         assertThatThrownBy(()->this.underTest.deleteMovie(id))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Movie with Id " + id + " does not exists");
     }
 
@@ -180,7 +182,7 @@ class MovieServiceTest {
         //when
         //then
         assertThatThrownBy(()->this.underTest.updateMovie(id, title, description, duration, casts, startDate, endDate))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Movie with Id " + id + " does not exists");
     }
 
@@ -194,7 +196,7 @@ class MovieServiceTest {
         //when
         //then
         assertThatThrownBy(()->this.underTest.getMovieById(id))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(MovieNotFoundException.class)
                 .hasMessageContaining("Movie with Id " + id + " does not exists");
     }
 

@@ -56,9 +56,6 @@ public class MovieController {
             this.service.deleteMovie(movieId);
             return ResponseEntity.noContent().build();
         }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
@@ -77,10 +74,7 @@ public class MovieController {
             this.service.updateMovie(movieId, title, description, duration, casts, startDate, endDateTime);
             return ResponseEntity.noContent().build();
         }
-            catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
-            catch (Exception e){
+        catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
     }

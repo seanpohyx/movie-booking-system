@@ -4,6 +4,7 @@ import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,11 @@ class ScreeningRepositoryTest {
 
     }
 
+    @AfterEach
+    void teardown(){
+        this.movieRepository.deleteAll();
+    }
+
     @Test
     void givenAuditoriumIdShowTimeDuration_whenExistsByAuditoriumIdAndShowTime_thenReturnScreening() {
 
@@ -77,7 +83,6 @@ class ScreeningRepositoryTest {
         long auditoriumId = auditorium.getAuditoriumId();
         long showtime = FIXED_DATETIME.toEpochSecond(offset);
         long duration = movie.getDuration();
-        long movieId = movie.getMovieId();
 
         //when
         Screening screeningTest = this.underTest.findScreeningThatClashesBetweenShowTime(auditoriumId, showtime, duration).orElse(null);

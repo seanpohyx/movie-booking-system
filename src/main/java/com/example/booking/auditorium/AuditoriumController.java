@@ -54,9 +54,6 @@ public class AuditoriumController {
         try {
             return ResponseEntity.ok().body(convertToDTO(this.service.updateAuditorium(id, numberOfSeats)));
         }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }

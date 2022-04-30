@@ -1,5 +1,6 @@
 package com.example.booking.auditorium;
 
+import com.example.booking.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class AuditoriumService {
 
     public Auditorium getAuditoriumById(Long id) {
         return this.repository.findById(id).orElseThrow(
-                () -> new IllegalStateException(
+                () -> new BadRequestException(
                     "Auditorium with Id " + id + " does not exists")
         );
     }
@@ -34,7 +35,7 @@ public class AuditoriumService {
         boolean isExist = this.repository.existsById(id);
 
         if(!isExist){
-            throw new IllegalStateException(
+            throw new BadRequestException(
                     "Auditorium with Id " + id + " does not exists");
         }
 
@@ -45,7 +46,7 @@ public class AuditoriumService {
     public Auditorium updateAuditorium(Long id, Integer numberOfSeats) {
 
         Auditorium auditorium = this.repository.findById(id).orElseThrow(
-                ()-> new IllegalStateException("Auditorium with Id " + id + " does not exists"));
+                ()-> new BadRequestException("Auditorium with Id " + id + " does not exists"));
 
         auditorium.setNumberOfSeats(numberOfSeats);
         return this.repository.save(auditorium);

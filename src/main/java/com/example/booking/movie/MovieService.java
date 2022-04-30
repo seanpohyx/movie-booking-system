@@ -1,5 +1,7 @@
 package com.example.booking.movie;
 
+import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.MovieNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,7 @@ public class MovieService {
     public void deleteMovie(Long id) {
         boolean isExists = this.repository.existsById(id);
         if(!isExists)
-            throw new IllegalStateException(
+            throw new BadRequestException(
                     "Movie with Id " + id + " does not exists");
 
         this.repository.deleteById(id);
@@ -51,7 +53,7 @@ public class MovieService {
         long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
 
         Movie movie = this.repository.findById(id).orElseThrow(
-                ()-> new IllegalStateException(
+                ()-> new BadRequestException(
                         "Movie with Id " + id + " does not exists"));
 
         if(title != null &&
@@ -97,7 +99,7 @@ public class MovieService {
     public Movie getMovieById(long movieId) {
 
         return this.repository.findById(movieId).orElseThrow(
-                () -> new IllegalStateException(
+                () -> new MovieNotFoundException(
                         "Movie with Id " + movieId + " does not exists"));
     }
 }

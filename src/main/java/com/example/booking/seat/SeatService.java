@@ -1,5 +1,6 @@
 package com.example.booking.seat;
 
+import com.example.booking.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,30 @@ public class SeatService {
         this.repository = repository;
     }
 
-    public List<Seat> getSeat() {
+    public List<Seat> getSeats() {
         return this.repository.findAll();
     }
 
     public Seat addNewSeat(SeatDto seatDto) {
 
         if(seatDto.getSeatNumber() == null || seatDto.getSeatNumber() <= 0)
-            throw new IllegalStateException("Missing seat number.");
+            throw new BadRequestException("Missing seat number.");
 
         if(seatDto.getCost() == null)
-            throw new IllegalStateException("Missing cost.");
+            throw new BadRequestException("Missing cost.");
 
         if(seatDto.getRowNumber() == null || seatDto.getRowNumber().isEmpty())
-            throw new IllegalStateException("Missing row number.");
+            throw new BadRequestException("Missing row number.");
+
+        boolean isExist = this.repository.existsById(SeatId.builder()
+                .rowNumber(seatDto.getRowNumber())
+                .seatNumber(seatDto.getSeatNumber())
+                .build());
+
+        if(isExist){
+            throw new BadRequestException("The seat number " + seatDto.getSeatNumber() +
+                    " and row number " + seatDto.getRowNumber() + " already existed");
+        }
 
         return this.repository.save(Seat.builder()
                 .seatId(SeatId.builder()
@@ -51,18 +62,18 @@ public class SeatService {
         boolean isExists = this.repository.existsById(seatId);
 
         if(!isExists)
-            throw new IllegalStateException("the row " + seatId.getRowNumber() + " or seat number " + seatId.getSeatNumber() + " does not exists");
+            throw new BadRequestException("the row " + seatId.getRowNumber() + " or seat number " + seatId.getSeatNumber() + " does not exists");
 
         this.repository.deleteById(seatId);
     }
 
-    public Seat updateSeat(String rowId, Integer seatNumber, String newRowId, Integer newSeatNumber, BigDecimal newCost) {
+    public void updateSeat(String rowId, Integer seatNumber, String newRowId, Integer newSeatNumber, BigDecimal newCost) {
 
         Seat seat = this.repository.findById(SeatId.builder()
                         .seatNumber(seatNumber)
                         .rowNumber(rowId)
                         .build())
-                .orElseThrow(()-> new IllegalStateException(
+                .orElseThrow(()-> new BadRequestException(
                         "the row " + seatNumber + " or seat number " + rowId + " does not exists"));
 
         if(newRowId != null &&
@@ -82,7 +93,8 @@ public class SeatService {
             seat.setCost(newCost);
         }
 
-        return this.repository.save(seat);
+        this.repository.save(seat);
 
     }
+
 }

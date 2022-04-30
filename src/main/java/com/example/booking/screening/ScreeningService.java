@@ -2,6 +2,8 @@ package com.example.booking.screening;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
+import com.example.booking.exception.AuditoriumNotFoundException;
+import com.example.booking.exception.BadRequestException;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +35,7 @@ public class ScreeningService {
 
     public Boolean isScreeningExist(long auditoriumId, long showtime, long duration){
 
-        if(this.screeningRepository.findScreeningThatClashesBetweenShowTime(auditoriumId, showtime, duration*60).isPresent())
-            return true;
-        else
-            return false;
+       return this.screeningRepository.findScreeningThatClashesBetweenShowTime(auditoriumId, showtime, duration*60).isPresent();
     }
 
     @Transactional
@@ -45,16 +44,16 @@ public class ScreeningService {
         Screening newScreening = Screening.builder().build();
 
         Movie movie = this.movieRepository.findById(screeningDto.getMovieId()).orElseThrow(
-                ()-> new IllegalStateException(
+                ()-> new BadRequestException(
                         "id " + screeningDto.getMovieId() + " does not exist for movie table."));
 
         if(isScreeningExist(screeningDto.getAuditoriumId(), screeningDto.getShowTime(), movie.getDuration())){
-            throw new RuntimeException("Existing showtime for this auditorium for timing " + screeningDto.getShowTime()
+            throw new BadRequestException("Existing showtime for this auditorium for timing " + screeningDto.getShowTime()
                 + " in auditorium id: " + screeningDto.getAuditoriumId());
         }
 
         Auditorium auditorium = this.auditoriumRepository.findById(screeningDto.getAuditoriumId()).orElseThrow(
-                ()-> new IllegalStateException(
+                ()-> new BadRequestException(
                     "id " + screeningDto.getAuditoriumId() + " does not exist for Auditorium table."));
 
         newScreening.setAuditorium(auditorium);
