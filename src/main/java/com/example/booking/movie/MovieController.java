@@ -26,7 +26,7 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<List<MovieDto>> getMovie(){
-        return ResponseEntity.ok().body(this.service.getMovie().stream()
+        return ResponseEntity.ok().body(this.service.getMovies().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
     }

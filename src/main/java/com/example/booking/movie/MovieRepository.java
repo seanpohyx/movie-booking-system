@@ -13,5 +13,5 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m " +
             "WHERE m.startDate <= ?1" +
             "AND m.endDate >= ?1")
-    public List<Movie> findNowShowing(LocalDate date);
+    List<Movie> findNowShowing(LocalDate date);
 }

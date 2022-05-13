@@ -24,10 +24,15 @@ public class SeatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SeatDto>> getSeat(){
+    public ResponseEntity<List<SeatDto>> getSeats(){
         return ResponseEntity.ok().body(this.service.getSeats().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{rowId}/{seatNumber}")
+    public ResponseEntity<SeatDto> getSeat(@PathVariable String rowId, @PathVariable int seatNumber){
+        return ResponseEntity.ok().body(convertToDTO(this.service.getSeat(seatNumber, rowId)));
     }
 
     @PostMapping

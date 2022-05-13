@@ -1,13 +1,9 @@
 package com.example.booking.account;
 
-import com.example.booking.seatBoooking.SeatBooking;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.booking.seatBooking.SeatBooking;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
+@Builder
 public class Account {
     @Id
     @SequenceGenerator(

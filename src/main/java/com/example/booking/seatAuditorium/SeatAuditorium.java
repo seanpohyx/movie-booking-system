@@ -2,7 +2,7 @@ package com.example.booking.seatAuditorium;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.seat.Seat;
-import com.example.booking.seatBoooking.SeatBooking;
+import com.example.booking.seatBooking.SeatBooking;
 import lombok.*;
 
 import javax.persistence.*;

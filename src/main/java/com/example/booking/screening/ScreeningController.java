@@ -59,10 +59,8 @@ public class ScreeningController {
                                 @RequestParam(required = false) Long auditoriumId){
 
         try {
-            return ResponseEntity.ok().body(convertToDTO(this.service.updateScreening(screeningId, showTime, movieId, auditoriumId)));
-        }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
+            this.service.updateScreening(screeningId, showTime, movieId, auditoriumId);
+            return ResponseEntity.noContent().build();
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();

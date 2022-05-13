@@ -2,14 +2,15 @@ package com.example.booking.screening;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
-import com.example.booking.exception.AuditoriumNotFoundException;
 import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.ScreeningNotFoundException;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +25,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ScreeningServiceTest {
@@ -241,14 +244,177 @@ class ScreeningServiceTest {
     }
 
     @Test
-    void getScreeningById() {
+    @DisplayName("Get screening by Id")
+    void givenScreeningId_whenGetScreeningById_thenReturnScreening() {
+        //given
+        long screeningId = 1;
+
+        given(this.screeningRepository.existsById(screeningId)).willReturn(true);
+        given(this.screeningRepository.getById(screeningId)).willReturn(this.screening);
+
+        //when
+        Screening testScreening = this.underTest.getScreeningById(screeningId);
+
+        //then
+        assertThat(testScreening).isEqualTo(this.screening);
     }
 
     @Test
-    void deleteScreening() {
+    @DisplayName("Get screening by Id - throws exception for invalid screeningId")
+    void givenScreeningId_whenGetScreeningById_thenThrowsExceptionsForInvalidScreeningId() {
+        //given
+        long screeningId = 1;
+
+        given(this.screeningRepository.existsById(screeningId)).willReturn(false);
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.getScreeningById(screeningId))
+                .isInstanceOf(ScreeningNotFoundException.class)
+                .hasMessageContaining(
+                        "id " + screeningId + " does not exist for screening table.");
     }
 
     @Test
-    void updateScreening() {
+    @DisplayName("Delete screening")
+    void givenScreeningId_whenDeleteScreening_thenDoNothing() {
+        //given
+        long screeningId = 1;
+
+        given(this.screeningRepository.existsById(screeningId)).willReturn(true);
+
+        //when
+        this.underTest.deleteScreening(screeningId);
+
+        //then
+        verify(this.screeningRepository, times(1)).deleteById(screeningId);
+    }
+
+    @Test
+    @DisplayName("Delete screening - throws exceptions for invalid screening id")
+    void givenScreeningId_whenDeleteScreening_thenThrowsExceptionsForInvalidScreeningId() {
+        //given
+        long screeningId = 1;
+
+        given(this.screeningRepository.existsById(screeningId)).willReturn(false);
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.deleteScreening(screeningId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining(
+                        "id " + screeningId + " does not exist for screening table.");
+
+    }
+
+    @Test
+    @DisplayName("Update screening")
+    void givenScreeningIdShowTimeMovieIdAuditoriumId_whenUpdateScreening_thenDoNothing() {
+        //given
+        long screeningId = 1L;
+        long showTime = FIXED_DATETIME.minusHours(2).toEpochSecond(offset);
+        long movieId = 1L;
+        long auditoriumId = 1L;
+
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.of(this.screening));
+        given(this.movieRepository.findById(movieId)).willReturn(Optional.of(this.movie));
+        given(this.auditoriumRepository.findById(auditoriumId)).willReturn(Optional.of(this.auditorium));
+        given(this.screeningRepository.findScreeningThatClashesBetweenShowTime(this.auditorium.getAuditoriumId(), showTime, this.movie.getDuration() * 60))
+                .willReturn(Optional.empty());
+
+        //when
+        this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId);
+
+        //then
+        ArgumentCaptor<Screening> screeningArgumentCaptor =
+                ArgumentCaptor.forClass(Screening.class);
+
+        verify(this.screeningRepository).save(screeningArgumentCaptor.capture());
+
+        Screening testScreening = screeningArgumentCaptor.getValue();
+        assertThat(testScreening.getScreeningId()).isEqualTo(screeningId);
+        assertThat(testScreening.getShowTime()).isEqualTo(showTime);
+        assertThat(testScreening.getMovie()).isEqualTo(this.movie);
+        assertThat(testScreening.getAuditorium()).isEqualTo(this.auditorium);
+    }
+
+    @Test
+    @DisplayName("Update screening - throw exceptions for invalid screening Id")
+    void givenScreeningIdShowTimeMovieIdAuditoriumId_whenUpdateScreening_thenThrowExceptionForScreeningId(){
+        //given
+        long screeningId = 1L;
+        long showTime = FIXED_DATETIME.minusHours(2).toEpochSecond(offset);
+        long movieId = 1L;
+        long auditoriumId = 1L;
+
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("screening of Id " + screeningId + " does not exists");
+    }
+
+    @Test
+    @DisplayName("Update screening - throw exceptions for invalid movieId")
+    void givenScreeningIdShowTimeMovieIdAuditoriumId_whenUpdateScreening_thenThrowExceptionForMovieId(){
+        //given
+        long screeningId = 1L;
+        long showTime = FIXED_DATETIME.minusHours(2).toEpochSecond(offset);
+        long movieId = 1L;
+        long auditoriumId = 1L;
+
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.of(this.screening));
+        given(this.movieRepository.findById(movieId)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("id " + movieId + " does not exist for movie table.");
+    }
+
+    @Test
+    @DisplayName("Update screening - throw exceptions for invalid auditoriumId")
+    void givenScreeningIdShowTimeMovieIdAuditoriumId_whenUpdateScreening_thenThrowExceptionForAuditoriumId(){
+        //given
+        long screeningId = 1L;
+        long showTime = FIXED_DATETIME.minusHours(2).toEpochSecond(offset);
+        long movieId = 1L;
+        long auditoriumId = 1L;
+
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.of(this.screening));
+        given(this.movieRepository.findById(movieId)).willReturn(Optional.of(this.movie));
+        given(this.auditoriumRepository.findById(auditoriumId)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("id " + auditoriumId + " does not exist for auditorium table.");
+    }
+
+    @Test
+    @DisplayName("Update screening - throw exceptions for existing showtime")
+    void givenScreeningIdShowTimeMovieIdAuditoriumId_whenUpdateScreening_thenThrowExceptionForExistingShowtime(){
+        //given
+        long screeningId = 1L;
+        long showTime = FIXED_DATETIME.minusHours(2).toEpochSecond(offset);
+        long movieId = 1L;
+        long auditoriumId = 1L;
+
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.of(this.screening));
+        given(this.movieRepository.findById(movieId)).willReturn(Optional.of(this.movie));
+        given(this.auditoriumRepository.findById(auditoriumId)).willReturn(Optional.of(this.auditorium));
+        given(this.screeningRepository.findScreeningThatClashesBetweenShowTime(this.auditorium.getAuditoriumId(), showTime, this.movie.getDuration() * 60))
+                .willReturn(Optional.of(this.screening));
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Existing showtime for this auditorium for timing " + showTime
+                        + " in auditorium id: " + this.auditorium.getAuditoriumId());
     }
 }

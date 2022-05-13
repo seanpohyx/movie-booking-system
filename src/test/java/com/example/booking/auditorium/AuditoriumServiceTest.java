@@ -1,5 +1,6 @@
 package com.example.booking.auditorium;
 
+import com.example.booking.exception.AuditoriumNotFoundException;
 import com.example.booking.exception.BadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ class AuditoriumServiceTest {
     }
 
     @Test
-    @DisplayName("get Auditorium By Id throws Exception")
+    @DisplayName("get Auditorium By Id")
     void givenId_whenGetAuditoriumById_thenReturnAuditorium() {
         //given
         long id = 1l;
@@ -80,7 +81,6 @@ class AuditoriumServiceTest {
         //then
         assertThat(testAuditorium).isEqualTo(auditorium);
 
-
     }
 
     @Test
@@ -100,7 +100,7 @@ class AuditoriumServiceTest {
     }
 
     @Test
-    @DisplayName("get Auditorium By Id throws Exception")
+    @DisplayName("get Auditorium By Id - throws Exception")
     void givenId_whenGetAuditoriumById_thenThrowsException() {
         //given
         long id = 1l;
@@ -110,7 +110,7 @@ class AuditoriumServiceTest {
         //when
         //then
         assertThatThrownBy(() -> this.underTest.getAuditoriumById(id))
-                .isInstanceOf(BadRequestException.class)
+                .isInstanceOf(AuditoriumNotFoundException.class)
                 .hasMessageContaining("Auditorium with Id " + id + " does not exists");
     }
 
@@ -130,7 +130,7 @@ class AuditoriumServiceTest {
     }
 
     @Test
-    @DisplayName("Update Auditorium throws exceptions")
+    @DisplayName("Update Auditorium")
     void givenIdNumberOfSeats_whenUpdateAuditorium_thenDoNothing() {
         //given
         long id = 1L;
@@ -153,20 +153,21 @@ class AuditoriumServiceTest {
         verify(this.repository).save(auditoriumArgumentCaptor.capture());
 
         Auditorium testAuditorium = auditoriumArgumentCaptor.getValue();
+        assertThat(testAuditorium.getAuditoriumId()).isEqualTo(id);
         assertThat(testAuditorium.getNumberOfSeats()).isEqualTo(numberOfSeats);
 
     }
 
     @Test
-    @DisplayName("Update Auditorium throws exceptions")
-    void givenIdNumberOfSeats_whenUpdateAuditorium_thenThrowsException() {
+    @DisplayName("Update Auditorium - throws exceptions for not existent auditorium")
+    void givenIdNumberOfSeats_whenUpdateAuditorium_thenThrowsExceptionForNonExistentAuditorium() {
         //given
         long id = 1L;
         int numberOfSeats = 10;
 
-        //when
         given(this.repository.findById(id)).willReturn(Optional.empty());
 
+        //when
         //then
         assertThatThrownBy(() -> this.underTest.updateAuditorium(id, numberOfSeats))
                 .isInstanceOf(BadRequestException.class)

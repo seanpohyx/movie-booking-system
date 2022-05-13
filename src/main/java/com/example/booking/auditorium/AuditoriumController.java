@@ -52,7 +52,8 @@ public class AuditoriumController {
             @PathVariable("auditoriumId") Long id,
             @RequestParam(required = true) Integer numberOfSeats) {
         try {
-            return ResponseEntity.ok().body(convertToDTO(this.service.updateAuditorium(id, numberOfSeats)));
+            this.service.updateAuditorium(id, numberOfSeats);
+            return ResponseEntity.noContent().build();
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();

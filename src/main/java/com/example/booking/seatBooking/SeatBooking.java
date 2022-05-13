@@ -1,15 +1,13 @@
-package com.example.booking.seatBoooking;
+package com.example.booking.seatBooking;
 
 import com.example.booking.seatAuditorium.SeatAuditorium;
 import com.example.booking.screening.Screening;
-import com.example.booking.seat.SeatId;
 import com.example.booking.account.Account;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.booking.seatAuditorium.SeatAuditoriumCK;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -17,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table
+@Builder
 public class SeatBooking {
 
     @Id
@@ -32,8 +31,6 @@ public class SeatBooking {
     private long seatBookingId;
 
     private long bookedTime;
-
-    private SeatId seatId;
 
     @ManyToOne()
     @JoinColumn(name="accountId", nullable = false)
@@ -51,4 +48,16 @@ public class SeatBooking {
     })
     private SeatAuditorium seatAuditorium;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SeatBooking that = (SeatBooking) o;
+        return seatBookingId == that.seatBookingId && bookedTime == that.bookedTime && Objects.equals(account, that.account) && Objects.equals(screening, that.screening) && Objects.equals(seatAuditorium, that.seatAuditorium);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seatBookingId, bookedTime, account, screening, seatAuditorium);
+    }
 }

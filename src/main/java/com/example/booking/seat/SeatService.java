@@ -1,6 +1,7 @@
 package com.example.booking.seat;
 
 import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.SeatNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,15 @@ public class SeatService {
 
     public List<Seat> getSeats() {
         return this.repository.findAll();
+    }
+
+    public Seat getSeat(int seatNumber, String rowId) {
+        return this.repository.findById(SeatId.builder()
+                        .seatNumber(seatNumber)
+                        .rowNumber(rowId)
+                .build())
+                .orElseThrow(()-> new SeatNotFoundException("Seat with seat number " + seatNumber +
+                        " and row id " + rowId + " not found."));
     }
 
     public Seat addNewSeat(SeatDto seatDto) {

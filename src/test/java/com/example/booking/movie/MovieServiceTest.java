@@ -2,6 +2,7 @@ package com.example.booking.movie;
 
 import com.example.booking.exception.BadRequestException;
 import com.example.booking.exception.MovieNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,14 +32,13 @@ class MovieServiceTest {
     @InjectMocks
     private MovieService underTest;
 
-    @Test
-    @DisplayName("Get now showing movies")
-    void given_whenGetNowShowing_thenListOfMovie(){
+    private Movie movie;
 
-        //given
-        LocalDate timeNow = LocalDate.now();
+    @BeforeEach
+    void setUp(){
         long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
-        Movie movie = Movie.builder()
+        this.movie = Movie.builder()
+                .movieId(1L)
                 .createdDateTime(epochTimeNow)
                 .duration(60 + 60 + 52)
                 .startDate(LocalDate.of(2022, Month.MARCH, 02))
@@ -48,14 +48,36 @@ class MovieServiceTest {
                 .updatedDateTime(epochTimeNow)
                 .description("When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement.")
                 .build();
-        given(this.repository.findNowShowing(timeNow)).willReturn(List.of(movie));
+    }
+
+    @Test
+    @DisplayName("Get all movies")
+    void given_whenGetMovies_thenReturnListOfMovies(){
+        //given
+        given(this.repository.findAll()).willReturn(List.of(this.movie));
+
+        //when
+        List<Movie> testMovies = this.underTest.getMovies();
+
+        //then
+        assertThat(testMovies.size()).isEqualTo(1);
+        assertThat(testMovies.get(0)).isEqualTo(this.movie);
+    }
+
+    @Test
+    @DisplayName("Get now showing movies")
+    void given_whenGetNowShowing_thenListOfMovie(){
+
+        //given
+        LocalDate timeNow = LocalDate.now();
+        given(this.repository.findNowShowing(timeNow)).willReturn(List.of(this.movie));
 
         //when
         List<Movie> testMovies = this.underTest.getNowShowing();
 
         //then
         assertThat(testMovies.size()).isEqualTo(1);
-        assertThat(testMovies.get(0)).isEqualTo(movie);
+        assertThat(testMovies.get(0)).isEqualTo(this.movie);
 
     }
 
@@ -64,22 +86,10 @@ class MovieServiceTest {
     void givenMovie_whenAddNewMovie_thenReturnMovie(){
 
         //given
-        long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
-        Movie movie = Movie.builder()
-                .movieId(1)
-                .createdDateTime(epochTimeNow)
-                .duration(60 + 60 + 52)
-                .startDate(LocalDate.of(2022, Month.MARCH, 02))
-                .endDate(LocalDate.of(2022, Month.MAY, 10))
-                .title("The batman")
-                .casts("Robert Pattison")
-                .updatedDateTime(epochTimeNow)
-                .description("When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement.")
-                .build();
-        given(this.repository.save(movie)).willReturn(movie);
+        given(this.repository.save(this.movie)).willReturn(this.movie);
 
         //when
-        Movie testMovie = this.underTest.addNewMovie(movie);
+        Movie testMovie = this.underTest.addNewMovie(this.movie);
 
         //then
         assertThat(testMovie.getMovieId()).isEqualTo(1);
@@ -103,8 +113,8 @@ class MovieServiceTest {
     }
 
     @Test
-    @DisplayName("Delete movie with Id with exception")
-    void givenId_whenDeleteMovie_thenThrowExceptions(){
+    @DisplayName("Delete movie with Id - throws exception for invalid movie id")
+    void givenId_whenDeleteMovie_thenThrowExceptionsForInvalidMovieId(){
 
         //given
         long id = 1L;
@@ -131,20 +141,7 @@ class MovieServiceTest {
         LocalDate startDate = LocalDate.now().minusDays(10);
         LocalDate endDate = LocalDate.now().plusDays(10);
 
-        long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
-        Movie movie = Movie.builder()
-                .movieId(1)
-                .createdDateTime(epochTimeNow)
-                .duration(60 + 60 + 52)
-                .startDate(LocalDate.of(2022, Month.MARCH, 02))
-                .endDate(LocalDate.of(2022, Month.MAY, 10))
-                .title("The batman")
-                .casts("Robert Pattison")
-                .updatedDateTime(epochTimeNow)
-                .description("When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement.")
-                .build();
-
-        given(this.repository.findById(id)).willReturn(Optional.of(movie));
+        given(this.repository.findById(id)).willReturn(Optional.of(this.movie));
 
         //when
         this.underTest.updateMovie(id, title, description, duration, casts, startDate, endDate);
@@ -165,8 +162,8 @@ class MovieServiceTest {
     }
 
     @Test
-    @DisplayName("Update Movie By Id with Exception")
-    void givenIdTitleDescriptionDurationCastsStartDateEndDate_whenUpdateMovie_thenThrowException(){
+    @DisplayName("Update Movie By Id - throws Exception for invalid movie id")
+    void givenIdTitleDescriptionDurationCastsStartDateEndDate_whenUpdateMovie_thenThrowExceptionForInvalidMovieId(){
 
         //given
         long id = 1L;
@@ -187,8 +184,8 @@ class MovieServiceTest {
     }
 
     @Test
-    @DisplayName("Get Movie By Id with Exception")
-    void givenId_whenGetMovieById_thenReturnMovie(){
+    @DisplayName("Get Movie By Id - throws Exception for invalid movie id")
+    void givenId_whenGetMovieById_thenThrowsExceptionsForInvalidMovieId(){
         long id = 1L;
 
         given(this.repository.findById(id)).willReturn(Optional.empty());

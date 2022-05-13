@@ -7,6 +7,7 @@ import org.hibernate.annotations.Columns;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -25,4 +26,17 @@ public class SeatAuditoriumCK implements Serializable {
 
     @Column(name = "auditorium_id")
     private long auditoriumId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SeatAuditoriumCK that = (SeatAuditoriumCK) o;
+        return auditoriumId == that.auditoriumId && Objects.equals(seatId, that.seatId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seatId, auditoriumId);
+    }
 }

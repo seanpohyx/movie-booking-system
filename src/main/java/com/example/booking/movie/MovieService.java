@@ -22,7 +22,7 @@ public class MovieService {
         this.repository = repository;
     }
 
-    public List<Movie> getMovie() {
+    public List<Movie> getMovies() {
         return this.repository.findAll();
     }
 

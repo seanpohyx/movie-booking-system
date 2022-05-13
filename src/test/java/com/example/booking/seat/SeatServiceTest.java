@@ -1,6 +1,7 @@
 package com.example.booking.seat;
 
 import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.SeatNotFoundException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class SeatServiceTest {
 
     @Test
     @DisplayName("Get all seats")
-    void given_whenGetSeat_returnListOfSeats() {
+    void given_whenGetSeats_thenReturnListOfSeats() {
         //given
         Seat seat1 = Seat.builder()
                 .seatId(SeatId.builder()
@@ -62,6 +63,59 @@ class SeatServiceTest {
         assertThat(testSeats.size()).isEqualTo(2);
         assertThat(testSeats.get(0)).isEqualTo(seat1);
         assertThat(testSeats.get(1)).isEqualTo(seat2);
+    }
+
+    @Test
+    @DisplayName("Get seat by seatId")
+    void givenSeatNumberRowId_whenGetSeat_thenReturnSeat() {
+        //given
+        int seatNumber = 1;
+        String rowNumber = "A";
+
+        SeatId seatId = SeatId.builder()
+                .rowNumber("A")
+                .seatNumber(1)
+                .build();
+
+        Seat seat = Seat.builder()
+                .seatId(seatId)
+                .cost(new BigDecimal(10.10d))
+                .build();
+
+        given(this.repository.findById(seatId)).willReturn(Optional.of(seat));
+
+        //when
+        Seat testSeat = this.underTest.getSeat(seatNumber, rowNumber);
+
+        //then
+        assertThat(testSeat).isEqualTo(seat);
+    }
+
+    @Test
+    @DisplayName("Get seat by seatId - throws exception not found")
+    void givenSeatNumberRowId_whenGetSeat_thenThrowsExceptionNotFound() {
+        //given
+        int seatNumber = 1;
+        String rowNumber = "A";
+
+        SeatId seatId = SeatId.builder()
+                .rowNumber("A")
+                .seatNumber(1)
+                .build();
+
+        Seat seat = Seat.builder()
+                .seatId(seatId)
+                .cost(new BigDecimal(10.10d))
+                .build();
+
+        given(this.repository.findById(seatId)).willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> this.underTest.getSeat(seatNumber, rowNumber))
+                .isInstanceOf(SeatNotFoundException.class)
+                .hasMessageContaining("Seat with seat number " + seatNumber +
+                        " and row id " + rowNumber + " not found.");
     }
 
     @Test

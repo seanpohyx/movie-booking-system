@@ -4,7 +4,6 @@ import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +21,10 @@ class ScreeningRepositoryTest {
 
     public static final ZoneOffset offset = ZoneOffset.UTC.of("+08:00");
     public static final LocalDateTime FIXED_DATETIME = LocalDateTime.of(2022, Month.MARCH, 01, 8, 00, 00);
-    private final ScreeningRepository underTest;
-    private final AuditoriumRepository auditoriumRepository;
-    private final MovieRepository movieRepository;
+
+    private ScreeningRepository underTest;
+    private AuditoriumRepository auditoriumRepository;
+    private MovieRepository movieRepository;
     private Screening screening;
 
     @Autowired
@@ -64,12 +64,6 @@ class ScreeningRepositoryTest {
                 .auditorium(auditorium)
                 .showTime(showTime)
                 .build());
-
-    }
-
-    @AfterEach
-    void teardown(){
-        this.movieRepository.deleteAll();
     }
 
     @Test

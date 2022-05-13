@@ -4,6 +4,7 @@ import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
 import com.example.booking.exception.AuditoriumNotFoundException;
 import com.example.booking.exception.BadRequestException;
+import com.example.booking.exception.ScreeningNotFoundException;
 import com.example.booking.movie.Movie;
 import com.example.booking.movie.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class ScreeningService {
 
         boolean isExists = this.screeningRepository.existsById(screeningId);
         if(!isExists)
-            throw new IllegalStateException(
+            throw new ScreeningNotFoundException(
                     "id " + screeningId + " does not exist for screening table.");
 
         return this.screeningRepository.getById(screeningId);
@@ -78,25 +79,25 @@ public class ScreeningService {
 
         boolean isExists = this.screeningRepository.existsById(screeningId);
         if(!isExists)
-            throw new IllegalStateException(
+            throw new BadRequestException(
                     "id " + screeningId + " does not exist for screening table.");
 
         this.screeningRepository.deleteById(screeningId);
     }
 
-    public Screening updateScreening(Long screeningId, Long showTime, Long movieId, Long auditoriumId) {
+    public void updateScreening(Long screeningId, Long showTime, Long movieId, Long auditoriumId) {
 
         Movie movie;
         Auditorium auditorium;
         long newShowTime;
 
         Screening screening = this.screeningRepository.findById(screeningId).orElseThrow(
-                ()-> new IllegalStateException(
+                ()-> new BadRequestException(
                         "screening of Id " + screeningId + " does not exists"));
 
         if(movieId!=null){
             movie = this.movieRepository.findById(movieId).orElseThrow(
-                    ()-> new IllegalStateException(
+                    ()-> new BadRequestException(
                             "id " + movieId + " does not exist for movie table."));
         }
         else{
@@ -105,7 +106,7 @@ public class ScreeningService {
 
         if(auditoriumId!=null){
             auditorium = this.auditoriumRepository.findById(auditoriumId).orElseThrow(
-                    ()-> new IllegalStateException(
+                    ()-> new BadRequestException(
                             "id " + auditoriumId + " does not exist for auditorium table."));
         }
         else{
@@ -123,7 +124,7 @@ public class ScreeningService {
 
 
         if(isScreeningExist(auditorium.getAuditoriumId(), newShowTime, movie.getDuration())){
-            throw new RuntimeException("Existing showtime for this auditorium for timing " + newShowTime
+            throw new BadRequestException("Existing showtime for this auditorium for timing " + newShowTime
                     + " in auditorium id: " + auditorium.getAuditoriumId());
         }
 
@@ -131,7 +132,7 @@ public class ScreeningService {
         screening.setAuditorium(auditorium);
         screening.setShowTime(newShowTime);
 
-        return this.screeningRepository.save(screening);
+        this.screeningRepository.save(screening);
 
     }
 }
