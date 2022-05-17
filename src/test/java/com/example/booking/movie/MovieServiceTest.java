@@ -86,7 +86,11 @@ class MovieServiceTest {
     void givenMovie_whenAddNewMovie_thenReturnMovie(){
 
         //given
-        given(this.repository.save(this.movie)).willReturn(this.movie);
+        long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
+        Movie newMovie = this.movie;
+        newMovie.setUpdatedDateTime(epochTimeNow);
+        newMovie.setCreatedDateTime(epochTimeNow);
+        given(this.repository.save(this.movie)).willReturn(newMovie);
 
         //when
         Movie testMovie = this.underTest.addNewMovie(this.movie);
@@ -130,7 +134,7 @@ class MovieServiceTest {
 
     @Test
     @DisplayName("Update Movie")
-    void givenIdTitleDescriptionDurationCastsStartDateEndDate_whenUpdateMovie_thenReturnNothing(){
+    void givenIdMovie_whenUpdateMovie_thenReturnNothing(){
 
         //given
         long id = 1L;
@@ -140,11 +144,19 @@ class MovieServiceTest {
         String casts = "Gordon Ramsay";
         LocalDate startDate = LocalDate.now().minusDays(10);
         LocalDate endDate = LocalDate.now().plusDays(10);
+        long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
 
         given(this.repository.findById(id)).willReturn(Optional.of(this.movie));
 
         //when
-        this.underTest.updateMovie(id, title, description, duration, casts, startDate, endDate);
+        this.underTest.updateMovie(id, Movie.builder()
+                .duration(duration)
+                .startDate(startDate)
+                .endDate(endDate)
+                .title(title)
+                .casts(casts)
+                .description(description)
+                .build());
 
         //then
         ArgumentCaptor<Movie> movieArgumentCaptor =
@@ -153,32 +165,29 @@ class MovieServiceTest {
         verify(this.repository).save(movieArgumentCaptor.capture());//this is to capture the saved results
 
         Movie capturedMovie = movieArgumentCaptor.getValue();
+        assertThat(capturedMovie.getMovieId()).isEqualTo(id);
         assertThat(capturedMovie.getTitle()).isEqualTo(title);
         assertThat(capturedMovie.getDescription()).isEqualTo(description);
         assertThat(capturedMovie.getDuration()).isEqualTo(duration);
         assertThat(capturedMovie.getCasts()).isEqualTo(casts);
         assertThat(capturedMovie.getStartDate()).isEqualTo(startDate);
         assertThat(capturedMovie.getEndDate()).isEqualTo(endDate);
+        assertThat(capturedMovie.getUpdatedDateTime()).isEqualTo(epochTimeNow);
     }
 
     @Test
     @DisplayName("Update Movie By Id - throws Exception for invalid movie id")
-    void givenIdTitleDescriptionDurationCastsStartDateEndDate_whenUpdateMovie_thenThrowExceptionForInvalidMovieId(){
+    void givenIdMovie_whenUpdateMovie_thenThrowExceptionForInvalidMovieId(){
 
         //given
         long id = 1L;
-        String title = "Hell Kitchen";
-        String description = "Cooking in Hell with Gordon";
-        Integer duration = 120;
-        String casts = "Gordon Ramsay";
-        LocalDate startDate = LocalDate.now().minusDays(10);
-        LocalDate endDate = LocalDate.now().plusDays(10);
 
         given(this.repository.findById(id)).willReturn(Optional.empty());
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateMovie(id, title, description, duration, casts, startDate, endDate))
+        assertThatThrownBy(()->this.underTest.updateMovie(id, Movie.builder()
+                        .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Movie with Id " + id + " does not exists");
     }

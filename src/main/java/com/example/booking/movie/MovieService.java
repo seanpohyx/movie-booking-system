@@ -47,8 +47,7 @@ public class MovieService {
     }
 
     @Transactional
-    public void updateMovie(Long id, String title, String description, Integer duration, String casts,
-                             LocalDate startDate, LocalDate endDate) {
+    public Movie updateMovie(Long id, Movie newMovie) {
 
         long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
 
@@ -56,43 +55,9 @@ public class MovieService {
                 ()-> new BadRequestException(
                         "Movie with Id " + id + " does not exists"));
 
-        if(title != null &&
-                title.length() > 0 &&
-                !Objects.equals(movie.getTitle(), title)){
-            movie.setTitle(title);
-        }
-
-        if(description != null &&
-                description.length() > 0 &&
-                !Objects.equals(movie.getDescription(), description)){
-            movie.setDescription(description);
-        }
-
-        if(duration != null &&
-                duration > 0 &&
-                duration != movie.getDuration()){
-            movie.setDuration(duration);
-        }
-
-        if(casts != null &&
-                casts.length() > 0 &&
-                !Objects.equals(movie.getCasts(), casts)){
-            movie.setCasts(casts);
-        }
-
-        if(startDate != null &&
-                !movie.getStartDate().equals(startDate)){
-            movie.setStartDate(startDate);
-        }
-
-        if(endDate != null &&
-                !movie.getEndDate().equals(endDate)){
-            movie.setEndDate(endDate);
-        }
-
-        movie.setUpdatedDateTime(epochTimeNow);
-
-        this.repository.save(movie);
+        newMovie.setMovieId(id);
+        newMovie.setUpdatedDateTime(epochTimeNow);
+        return this.repository.save(newMovie);
 
     }
 

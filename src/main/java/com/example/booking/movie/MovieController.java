@@ -25,7 +25,7 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieDto>> getMovie(){
+    public ResponseEntity<List<MovieDto>> getMovies(){
         return ResponseEntity.ok().body(this.service.getMovies().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
@@ -63,16 +63,11 @@ public class MovieController {
 
     @PutMapping(path = "{movieId}")
     public ResponseEntity<MovieDto> updateMovie(@PathVariable Long movieId,
-                            @RequestParam(required = false) String title,
-                            @RequestParam(required = false) String description,
-                            @RequestParam(required = false) Integer duration,
-                            @RequestParam(required = false) String casts,
-                            @RequestParam(required = false) LocalDate startDate,
-                            @RequestParam(required = false) LocalDate endDateTime){
+                            @RequestBody MovieDto movieDto){
 
         try {
-            this.service.updateMovie(movieId, title, description, duration, casts, startDate, endDateTime);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok()
+                    .body(convertToDTO(this.service.updateMovie(movieId, convertToEntity(movieDto))));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();

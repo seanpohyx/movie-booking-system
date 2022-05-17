@@ -28,7 +28,7 @@ public class Movie {
             strategy = GenerationType.SEQUENCE,
             generator = "show_sequence"
     )
-    private long movieId;
+    private Long movieId;
 
     private String title;
 
@@ -45,9 +45,9 @@ public class Movie {
 
     private LocalDate endDate;
 
-    private long createdDateTime;
+    private Long createdDateTime;
 
-    private long updatedDateTime;
+    private Long updatedDateTime;
 
     @OneToMany(mappedBy="movie")
     private List<Screening> screeningList;
