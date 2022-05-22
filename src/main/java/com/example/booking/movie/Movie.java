@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -51,4 +52,17 @@ public class Movie {
 
     @OneToMany(mappedBy="movie")
     private List<Screening> screeningList;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return Objects.equals(movieId, movie.movieId) && Objects.equals(title, movie.title) && Objects.equals(description, movie.description) && Objects.equals(duration, movie.duration) && Objects.equals(casts, movie.casts) && Objects.equals(startDate, movie.startDate) && Objects.equals(endDate, movie.endDate) && Objects.equals(createdDateTime, movie.createdDateTime) && Objects.equals(updatedDateTime, movie.updatedDateTime) && Objects.equals(screeningList, movie.screeningList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movieId, title, description, duration, casts, startDate, endDate, createdDateTime, updatedDateTime, screeningList);
+    }
 }

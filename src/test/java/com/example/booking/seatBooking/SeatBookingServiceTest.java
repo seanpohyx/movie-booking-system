@@ -503,6 +503,15 @@ class SeatBookingServiceTest {
         long accountId = 2L;
         long screeningId = 2L;
 
+        SeatBookingDto seatBookingDto = SeatBookingDto.builder()
+                .accountId(accountId)
+                .auditoriumId(auditoriumId)
+                .bookedTime(bookedTime)
+                .seatNumber(seatNumber)
+                .rowNumber(rowNumber)
+                .screeningId(screeningId)
+                .build();
+
         SeatAuditoriumCK newSeatAuditoriumCK = SeatAuditoriumCK.builder()
                 .auditoriumId(auditoriumId)
                 .seatId(SeatId.builder()
@@ -545,8 +554,7 @@ class SeatBookingServiceTest {
         given(this.seatBookingRepository.save(newSeatBooking)).willReturn(newSeatBooking);
 
         //when
-        this.underTest.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                auditoriumId, screeningId, accountId, bookedTime);
+        this.underTest.updateSeatBooking(bookingId, seatBookingDto);
         //then
         ArgumentCaptor<SeatBooking> seatBookingArgumentCaptor =
                 ArgumentCaptor.forClass(SeatBooking.class);
@@ -576,12 +584,20 @@ class SeatBookingServiceTest {
         long accountId = 2L;
         long screeningId = 2L;
 
+        SeatBookingDto seatBookingDto = SeatBookingDto.builder()
+                .accountId(accountId)
+                .auditoriumId(auditoriumId)
+                .bookedTime(bookedTime)
+                .seatNumber(seatNumber)
+                .rowNumber(rowNumber)
+                .screeningId(screeningId)
+                .build();
+
         given(this.seatBookingRepository.findById(bookingId)).willReturn(Optional.empty());
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                auditoriumId, screeningId, accountId, bookedTime))
+        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, seatBookingDto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Invalid bookingId :" + bookingId);
 
@@ -599,6 +615,15 @@ class SeatBookingServiceTest {
         long accountId = 2L;
         long screeningId = 2L;
 
+        SeatBookingDto seatBookingDto = SeatBookingDto.builder()
+                .accountId(accountId)
+                .auditoriumId(auditoriumId)
+                .bookedTime(bookedTime)
+                .seatNumber(seatNumber)
+                .rowNumber(rowNumber)
+                .screeningId(screeningId)
+                .build();
+
         SeatAuditoriumCK newSeatAuditoriumCK = SeatAuditoriumCK.builder()
                 .auditoriumId(auditoriumId)
                 .seatId(SeatId.builder()
@@ -615,8 +640,7 @@ class SeatBookingServiceTest {
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                auditoriumId, screeningId, accountId, bookedTime))
+        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, seatBookingDto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining(String.format("SeatAuditorium does not exist with row number: %s, seat number: %s and " +
                         "auditoriumId of %s",rowNumber, seatNumber, auditoriumId));
@@ -634,6 +658,15 @@ class SeatBookingServiceTest {
         String rowNumber = "B";
         long accountId = 2L;
         long screeningId = 2L;
+
+        SeatBookingDto seatBookingDto = SeatBookingDto.builder()
+                .accountId(accountId)
+                .auditoriumId(auditoriumId)
+                .bookedTime(bookedTime)
+                .seatNumber(seatNumber)
+                .rowNumber(rowNumber)
+                .screeningId(screeningId)
+                .build();
 
         SeatAuditoriumCK newSeatAuditoriumCK = SeatAuditoriumCK.builder()
                 .auditoriumId(auditoriumId)
@@ -664,8 +697,7 @@ class SeatBookingServiceTest {
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                auditoriumId, screeningId, accountId, bookedTime))
+        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, seatBookingDto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Screening id of " + screeningId + " does not exist");
 
@@ -682,6 +714,15 @@ class SeatBookingServiceTest {
         String rowNumber = "B";
         long accountId = 2L;
         long screeningId = 2L;
+
+        SeatBookingDto seatBookingDto = SeatBookingDto.builder()
+                .accountId(accountId)
+                .auditoriumId(auditoriumId)
+                .bookedTime(bookedTime)
+                .seatNumber(seatNumber)
+                .rowNumber(rowNumber)
+                .screeningId(screeningId)
+                .build();
 
         SeatAuditoriumCK newSeatAuditoriumCK = SeatAuditoriumCK.builder()
                 .auditoriumId(auditoriumId)
@@ -716,8 +757,7 @@ class SeatBookingServiceTest {
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                auditoriumId, screeningId, accountId, bookedTime))
+        assertThatThrownBy(()->this.underTest.updateSeatBooking(bookingId, seatBookingDto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("User id of " + accountId + " does not exist");
 

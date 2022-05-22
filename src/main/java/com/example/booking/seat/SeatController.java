@@ -36,9 +36,9 @@ public class SeatController {
     }
 
     @PostMapping
-    public ResponseEntity<SeatDto> addSeats(@RequestBody SeatDto seatDto){
+    public ResponseEntity<SeatDto> addSeat(@RequestBody SeatDto seatDto){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/seat").toUriString());
-        return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewSeat(seatDto)));
+        return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewSeat(convertToEntity(seatDto))));
     }
 
     @DeleteMapping(path="/{rowId}/{seatNumber}")
@@ -57,13 +57,11 @@ public class SeatController {
     @PutMapping(path="/{rowId}/{seatId}")
     public ResponseEntity<SeatDto> updateSeat(@PathVariable String rowId,
                                      @PathVariable Integer seatId,
-                                     @RequestParam(required = false) String rowNumber,
-                                     @RequestParam(required = false) Integer seatNumber,
-                                     @RequestParam(required = false) BigDecimal cost){
+                                      @RequestBody SeatDto seatDto){
 
         try {
-            this.service.updateSeat(rowId, seatId, rowNumber, seatNumber, cost);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok()
+                    .body(convertToDTO(this.service.updateSeat(rowId, seatId, convertToEntity(seatDto))));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
@@ -76,6 +74,16 @@ public class SeatController {
                 .cost(seat.getCost())
                 .rowNumber(seat.getSeatId().getRowNumber())
                 .seatNumber(seat.getSeatId().getSeatNumber())
+                .build();
+    }
+
+    public Seat convertToEntity(SeatDto seatDto) {
+        return Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber(seatDto.getRowNumber())
+                        .seatNumber(seatDto.getSeatNumber())
+                        .build())
+                .cost(seatDto.getCost())
                 .build();
     }
 }

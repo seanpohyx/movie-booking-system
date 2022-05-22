@@ -38,13 +38,14 @@ class MovieControllerTest {
     @MockBean
     private MovieService service;
 
-    private Movie movie;
-
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private Movie movie;
+
 
     @BeforeEach
     void setUp(){
@@ -67,8 +68,8 @@ class MovieControllerTest {
     @Test
     @DisplayName("Get movies")
     void given_whenGetMovies_thenReturnListOfMovies() throws Exception {
-        //given
 
+        //given
         given(this.service.getMovies()).willReturn(List.of(this.movie));
 
         //when
@@ -181,7 +182,7 @@ class MovieControllerTest {
 
     @Test
     @DisplayName("Update movie")
-    void givenMovieIdTitleDescriptionDurationCastsStartDateEndDateTime_whenUpdateMovie_thenReturnMovieDto() throws Exception {
+    void givenMovieIdMovie_whenUpdateMovie_thenReturnMovieDto() throws Exception {
         //given
         long movieId = 1L;
         int duration = 60 + 60 + 52;
@@ -191,7 +192,7 @@ class MovieControllerTest {
         String casts = "Robert Pattison";
         String description = "When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement.";
 
-        Movie inputMovie = Movie.builder()
+        MovieDto movieDto = MovieDto.builder()
                 .duration(duration)
                 .startDate(startDate)
                 .endDate(endDateTime)
@@ -200,22 +201,25 @@ class MovieControllerTest {
                 .description(description)
                 .build();
 
-        given(this.service.updateMovie(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Movie.class)))
-                .willAnswer((invocation) -> invocation.getArgument(1));
+        given(this.service.updateMovie(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(MovieDto.class)))
+                .willAnswer((invocation) -> {
+                    //need to return a movie.class
+                    return this.modelMapper.map(invocation.getArgument(1), Movie.class);
+                });
         //when
         ResultActions response =
                 this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/movie/{movieId}", movieId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(this.modelMapper.map(inputMovie, MovieDto.class))));
+                        .content(this.objectMapper.writeValueAsString(movieDto)));
 
         //then
         response.andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.title", is(inputMovie.getTitle())))
-                .andExpect(jsonPath("$.description", is(inputMovie.getDescription())))
-                .andExpect(jsonPath("$.duration", is(inputMovie.getDuration().intValue())))
-                .andExpect(jsonPath("$.casts", is(inputMovie.getCasts())))
-                .andExpect(jsonPath("$.startDate", is(inputMovie.getStartDate().toString())))
-                .andExpect(jsonPath("$.endDate", is(inputMovie.getEndDate().toString())));
+                .andExpect(jsonPath("$.title", is(movieDto.getTitle())))
+                .andExpect(jsonPath("$.description", is(movieDto.getDescription())))
+                .andExpect(jsonPath("$.duration", is(movieDto.getDuration().intValue())))
+                .andExpect(jsonPath("$.casts", is(movieDto.getCasts())))
+                .andExpect(jsonPath("$.startDate", is(movieDto.getStartDate().toString())))
+                .andExpect(jsonPath("$.endDate", is(movieDto.getEndDate().toString())));
     }
 
 }

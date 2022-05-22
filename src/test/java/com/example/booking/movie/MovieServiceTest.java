@@ -48,6 +48,7 @@ class MovieServiceTest {
                 .updatedDateTime(epochTimeNow)
                 .description("When the Riddler, a sadistic serial killer, begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption and question his family's involvement.")
                 .build();
+
     }
 
     @Test
@@ -149,7 +150,7 @@ class MovieServiceTest {
         given(this.repository.findById(id)).willReturn(Optional.of(this.movie));
 
         //when
-        this.underTest.updateMovie(id, Movie.builder()
+        this.underTest.updateMovie(id, MovieDto.builder()
                 .duration(duration)
                 .startDate(startDate)
                 .endDate(endDate)
@@ -186,7 +187,7 @@ class MovieServiceTest {
 
         //when
         //then
-        assertThatThrownBy(()->this.underTest.updateMovie(id, Movie.builder()
+        assertThatThrownBy(()->this.underTest.updateMovie(id, MovieDto.builder()
                         .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Movie with Id " + id + " does not exists");

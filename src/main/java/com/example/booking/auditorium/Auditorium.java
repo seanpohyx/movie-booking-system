@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -38,4 +39,16 @@ public class Auditorium {
             mappedBy="auditorium")
     private List<SeatAuditorium> seatAuditoriumList;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Auditorium that = (Auditorium) o;
+        return auditoriumId == that.auditoriumId && Objects.equals(numberOfSeats, that.numberOfSeats) && Objects.equals(screeningList, that.screeningList) && Objects.equals(seatAuditoriumList, that.seatAuditoriumList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(auditoriumId, numberOfSeats, screeningList, seatAuditoriumList);
+    }
 }

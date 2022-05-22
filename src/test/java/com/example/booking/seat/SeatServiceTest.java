@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -120,23 +121,25 @@ class SeatServiceTest {
 
     @Test
     @DisplayName("Add seat")
-    void givenSeatDTO_whenAddNewSeat_thenReturnSeat() {
+    void givenSeat_whenAddNewSeat_thenReturnSeat() {
         //given
-        SeatDto seatDto = SeatDto.builder()
-                .seatNumber(1)
-                .rowNumber("A")
+        Seat seat = Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber("A")
+                        .seatNumber(1)
+                        .build())
                 .cost(new BigDecimal(10.10d))
                 .build();
 
         given(this.repository.existsById(
                     SeatId.builder()
-                    .rowNumber(seatDto.getRowNumber())
-                    .seatNumber(seatDto.getSeatNumber())
+                    .rowNumber(seat.getSeatId().getRowNumber())
+                    .seatNumber(seat.getSeatId().getSeatNumber())
                     .build()))
                 .willReturn(false);
 
         //when
-        this.underTest.addNewSeat(seatDto);
+        this.underTest.addNewSeat(seat);
 
         //then
         ArgumentCaptor<Seat> seatArgumentCaptor =
@@ -144,22 +147,27 @@ class SeatServiceTest {
 
         verify(this.repository).save(seatArgumentCaptor.capture());
         Seat capturedSeat = seatArgumentCaptor.getValue();
-        assertThat(capturedSeat.getSeatId().getSeatNumber()).isEqualTo(seatDto.getSeatNumber());
-        assertThat(capturedSeat.getSeatId().getRowNumber()).isEqualTo(seatDto.getRowNumber());
-        assertThat(capturedSeat.getCost()).isEqualTo(seatDto.getCost());
+        assertThat(capturedSeat.getSeatId().getSeatNumber()).isEqualTo(seat.getSeatId().getSeatNumber());
+        assertThat(capturedSeat.getSeatId().getRowNumber()).isEqualTo(seat.getSeatId().getRowNumber());
+        assertThat(capturedSeat.getCost()).isEqualTo(seat.getCost());
 
     }
 
     @Test
     @DisplayName("Add seat - throw exception for missing seat number")
-    void givenSeatDTO_whenAddNewSeat_thenThrowExceptionForSeatNumber() {
+    void givenSeat_whenAddNewSeat_thenThrowExceptionForSeatNumber() {
         //given
-        SeatDto seatDto = SeatDto.builder()
+        Seat seat = Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber("A")
+                        .seatNumber(null)
+                        .build())
+                .cost(new BigDecimal(10.10d))
                 .build();
 
         //when
         //then
-        assertThatThrownBy(()-> this.underTest.addNewSeat(seatDto))
+        assertThatThrownBy(()-> this.underTest.addNewSeat(seat))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Missing seat number.");
 
@@ -169,13 +177,17 @@ class SeatServiceTest {
     @DisplayName("Add seat - throw exception for missing cost")
     void givenSeatDTO_whenAddNewSeat_thenThrowExceptionForCost() {
         //given
-        SeatDto seatDto = SeatDto.builder()
-                .seatNumber(1)
+        Seat seat = Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber("A")
+                        .seatNumber(1)
+                        .build())
+                .cost(null)
                 .build();
 
         //when
         //then
-        assertThatThrownBy(()-> this.underTest.addNewSeat(seatDto))
+        assertThatThrownBy(()-> this.underTest.addNewSeat(seat))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Missing cost.");
 
@@ -183,16 +195,19 @@ class SeatServiceTest {
 
     @Test
     @DisplayName("Add seat - throw exception for missing row number")
-    void givenSeatDTO_whenAddNewSeat_thenThrowExceptionForRowNumber() {
+    void givenSeat_whenAddNewSeat_thenThrowExceptionForRowNumber() {
         //given
-        SeatDto seatDto = SeatDto.builder()
-                .seatNumber(1)
+        Seat seat = Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber(null)
+                        .seatNumber(1)
+                        .build())
                 .cost(new BigDecimal(10.10d))
                 .build();
 
         //when
         //then
-        assertThatThrownBy(()-> this.underTest.addNewSeat(seatDto))
+        assertThatThrownBy(()-> this.underTest.addNewSeat(seat))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Missing row number.");
     }
@@ -201,25 +216,27 @@ class SeatServiceTest {
     @DisplayName("Add seat - throw exception for existing seat id")
     void givenSeatDTO_whenAddNewSeat_thenThrowExceptionForExistingSeatId() {
         //given
-        SeatDto seatDto = SeatDto.builder()
-                .seatNumber(1)
-                .rowNumber("A")
+        Seat seat = Seat.builder()
+                .seatId(SeatId.builder()
+                        .rowNumber("A")
+                        .seatNumber(1)
+                        .build())
                 .cost(new BigDecimal(10.10d))
                 .build();
 
         given(this.repository.existsById(
                 SeatId.builder()
-                        .rowNumber(seatDto.getRowNumber())
-                        .seatNumber(seatDto.getSeatNumber())
+                        .rowNumber(seat.getSeatId().getRowNumber())
+                        .seatNumber(seat.getSeatId().getSeatNumber())
                         .build()))
                 .willReturn(true);
 
         //when
         //then
-        assertThatThrownBy(()-> this.underTest.addNewSeat(seatDto))
+        assertThatThrownBy(()-> this.underTest.addNewSeat(seat))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("The seat number " + seatDto.getSeatNumber() +
-                        " and row number " + seatDto.getRowNumber() + " already existed");
+                .hasMessageContaining("The seat number " + seat.getSeatId().getSeatNumber() +
+                        " and row number " + seat.getSeatId().getRowNumber() + " already existed");
     }
 
     @Test
@@ -272,8 +289,6 @@ class SeatServiceTest {
         //given
         String rowId = "A";
         int seatNumber = 10;
-        String newRowId = "B";
-        int newSeatNumber = 20;
         BigDecimal newCost = new BigDecimal(10.10d);
 
         SeatId seatId = SeatId.builder()
@@ -288,7 +303,9 @@ class SeatServiceTest {
         given(this.repository.findById(seatId)).willReturn(Optional.of(seat));
 
         //when
-        this.underTest.updateSeat(rowId, seatNumber, newRowId, newSeatNumber, newCost);
+        this.underTest.updateSeat(rowId, seatNumber, Seat.builder()
+                        .cost(newCost)
+                        .build());
 
         //then
         ArgumentCaptor<Seat> seatArgumentCaptor =
@@ -297,8 +314,8 @@ class SeatServiceTest {
         verify(this.repository).save(seatArgumentCaptor.capture());
 
         Seat capturedSeat = seatArgumentCaptor.getValue();
-        assertThat(capturedSeat.getSeatId().getRowNumber()).isEqualTo(newRowId);
-        assertThat(capturedSeat.getSeatId().getSeatNumber()).isEqualTo(newSeatNumber);
+        assertThat(capturedSeat.getSeatId().getRowNumber()).isEqualTo(rowId);
+        assertThat(capturedSeat.getSeatId().getSeatNumber()).isEqualTo(seatNumber);
         assertThat(capturedSeat.getCost()).isEqualTo(newCost);
     }
 
@@ -308,8 +325,6 @@ class SeatServiceTest {
         //given
         String rowId = "A";
         int seatNumber = 10;
-        String newRowId = "B";
-        int newSeatNumber = 20;
         BigDecimal newCost = new BigDecimal(10.10d);
 
         SeatId seatId = SeatId.builder()
@@ -321,7 +336,9 @@ class SeatServiceTest {
 
         //when
         //then
-        assertThatThrownBy(()-> this.underTest.updateSeat(rowId, seatNumber, newRowId, newSeatNumber, newCost))
+        assertThatThrownBy(()-> this.underTest.updateSeat(rowId, seatNumber, Seat.builder()
+                        .cost(newCost)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("the row " + seatNumber + " or seat number " + rowId + " does not exists");
     }

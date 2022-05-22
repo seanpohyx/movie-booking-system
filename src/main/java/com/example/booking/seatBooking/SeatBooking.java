@@ -28,9 +28,9 @@ public class SeatBooking {
             strategy = GenerationType.SEQUENCE,
             generator = "booking_sequence"
     )
-    private long seatBookingId;
+    private Long seatBookingId;
 
-    private long bookedTime;
+    private Long bookedTime;
 
     @ManyToOne()
     @JoinColumn(name="accountId", nullable = false)

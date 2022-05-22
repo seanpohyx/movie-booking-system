@@ -10,11 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ScreeningDto {
-    private long screeningId;
-    private long showTime;
-    private long movieId;
-    private long auditoriumId;
-
-
+    private Long screeningId;
+    private Long showTime;
+    private Long movieId;
+    private Long auditoriumId;
 
 }

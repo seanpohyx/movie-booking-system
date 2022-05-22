@@ -86,7 +86,7 @@ class ScreeningServiceTest {
         given(this.screeningRepository.findAll()).willReturn(List.of(this.screening));
 
         //when
-        List<Screening> screenings = this.underTest.getScreening();
+        List<Screening> screenings = this.underTest.getScreenings();
 
         //then
         assertThat(screenings.size()).isEqualTo(1);
@@ -249,8 +249,7 @@ class ScreeningServiceTest {
         //given
         long screeningId = 1;
 
-        given(this.screeningRepository.existsById(screeningId)).willReturn(true);
-        given(this.screeningRepository.getById(screeningId)).willReturn(this.screening);
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.of(this.screening));
 
         //when
         Screening testScreening = this.underTest.getScreeningById(screeningId);
@@ -265,7 +264,7 @@ class ScreeningServiceTest {
         //given
         long screeningId = 1;
 
-        given(this.screeningRepository.existsById(screeningId)).willReturn(false);
+        given(this.screeningRepository.findById(screeningId)).willReturn(Optional.empty());
 
         //when
         //then
@@ -323,7 +322,12 @@ class ScreeningServiceTest {
                 .willReturn(Optional.empty());
 
         //when
-        this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId);
+        this.underTest.updateScreening(screeningId, ScreeningDto.builder()
+                        .auditoriumId(auditoriumId)
+                        .screeningId(screeningId)
+                        .movieId(movieId)
+                        .showTime(showTime)
+                .build());
 
         //then
         ArgumentCaptor<Screening> screeningArgumentCaptor =
@@ -351,7 +355,12 @@ class ScreeningServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, ScreeningDto.builder()
+                .auditoriumId(auditoriumId)
+                .screeningId(screeningId)
+                .movieId(movieId)
+                .showTime(showTime)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("screening of Id " + screeningId + " does not exists");
     }
@@ -370,7 +379,12 @@ class ScreeningServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, ScreeningDto.builder()
+                .auditoriumId(auditoriumId)
+                .screeningId(screeningId)
+                .movieId(movieId)
+                .showTime(showTime)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("id " + movieId + " does not exist for movie table.");
     }
@@ -390,7 +404,12 @@ class ScreeningServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, ScreeningDto.builder()
+                .auditoriumId(auditoriumId)
+                .screeningId(screeningId)
+                .movieId(movieId)
+                .showTime(showTime)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("id " + auditoriumId + " does not exist for auditorium table.");
     }
@@ -412,7 +431,12 @@ class ScreeningServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, showTime, movieId, auditoriumId))
+        assertThatThrownBy(() -> this.underTest.updateScreening(screeningId, ScreeningDto.builder()
+                .auditoriumId(auditoriumId)
+                .screeningId(screeningId)
+                .showTime(showTime)
+                .movieId(movieId)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Existing showtime for this auditorium for timing " + showTime
                         + " in auditorium id: " + this.auditorium.getAuditoriumId());

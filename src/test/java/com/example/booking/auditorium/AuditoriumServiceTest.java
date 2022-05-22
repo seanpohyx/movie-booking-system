@@ -144,7 +144,9 @@ class AuditoriumServiceTest {
         given(this.repository.findById(id)).willReturn(Optional.of(auditorium));
 
         //when
-        this.underTest.updateAuditorium(id, numberOfSeats);
+        this.underTest.updateAuditorium(id, AuditoriumDto.builder()
+                        .numberOfSeats(numberOfSeats)
+                        .build());
 
         //then
         ArgumentCaptor<Auditorium> auditoriumArgumentCaptor =
@@ -169,7 +171,9 @@ class AuditoriumServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> this.underTest.updateAuditorium(id, numberOfSeats))
+        assertThatThrownBy(() -> this.underTest.updateAuditorium(id, AuditoriumDto.builder()
+                .numberOfSeats(numberOfSeats)
+                .build()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Auditorium with Id " + id + " does not exists");
 

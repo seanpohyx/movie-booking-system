@@ -1,12 +1,13 @@
 package com.example.booking.auditorium;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuditoriumDto {
 
     private long auditoriumId;

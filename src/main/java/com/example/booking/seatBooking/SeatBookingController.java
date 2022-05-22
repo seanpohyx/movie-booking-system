@@ -45,23 +45,17 @@ public class SeatBookingController {
             return ResponseEntity.noContent().build();
         }
         catch(Exception e){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PutMapping(path="/{bookingId}")
-    public ResponseEntity updateSeatBooking(@PathVariable Long bookingId,
-                                            @RequestParam(required = false) String rowNumber,
-                                            @RequestParam(required = false) Integer seatNumber,
-                                            @RequestParam(required = false) Long auditoriumId,
-                                            @RequestParam(required = false) Long screeningId,
-                                            @RequestParam(required = false) Long userId,
-                                            @RequestParam(required = false) Long bookingTime){
+    public ResponseEntity<SeatBookingDto> updateSeatBooking(@PathVariable Long bookingId,
+                                            @RequestBody SeatBookingDto seatBookingDto){
 
         try{
-            this.service.updateSeatBooking(bookingId, rowNumber, seatNumber,
-                    auditoriumId, screeningId, userId, bookingTime);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok()
+                    .body(convertToDTO(this.service.updateSeatBooking(bookingId, seatBookingDto)));
         }
         catch(Exception e){
             return ResponseEntity.internalServerError().build();
@@ -71,9 +65,10 @@ public class SeatBookingController {
 
     public SeatBookingDto convertToDTO(SeatBooking seatBooking){
         return SeatBookingDto.builder()
-//                .seatNumber(seatBooking.getSeatAuditoriumCK().getSeatId().getSeatNumber())
-//                .rowNumber(seatBooking.getSeatAuditoriumCK().getSeatId().getRowNumber())
-//                .auditoriumId(seatBooking.getSeatAuditoriumCK().getAuditoriumId())
+                .seatBookingId(seatBooking.getSeatBookingId())
+                .seatNumber(seatBooking.getSeatAuditorium().getSeat().getSeatId().getSeatNumber())
+                .rowNumber(seatBooking.getSeatAuditorium().getSeat().getSeatId().getRowNumber())
+                .auditoriumId(seatBooking.getSeatAuditorium().getAuditorium().getAuditoriumId())
                 .screeningId(seatBooking.getScreening().getScreeningId())
                 .accountId(seatBooking.getAccount().getAccountId())
                 .bookedTime(seatBooking.getBookedTime())

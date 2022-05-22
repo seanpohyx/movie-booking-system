@@ -100,12 +100,17 @@ public class SeatBookingService {
     }
 
 
-    public void updateSeatBooking(Long bookingId, String rowNumber, Integer seatNumber,
-                                  Long auditoriumId, Long screeningId, Long userId,
-                                  Long bookingTime) {
+    public SeatBooking updateSeatBooking(Long bookingId, SeatBookingDto seatBookingDto) {
 
         SeatBooking seatBooking = this.seatBookingRepository.findById(bookingId)
                 .orElseThrow(()-> new BadRequestException("Invalid bookingId :" + bookingId));
+
+        String rowNumber = seatBookingDto.getRowNumber();
+        Integer seatNumber = seatBookingDto.getSeatNumber();
+        Long auditoriumId = seatBookingDto.getAuditoriumId();
+        Long screeningId = seatBookingDto.getScreeningId();
+        Long userId = seatBookingDto.getAccountId();
+        Long bookingTime = seatBookingDto.getBookedTime();
 
         SeatAuditoriumCK currentSeatAuditoriumCK = seatBooking.getSeatAuditorium().getId();
 
@@ -140,6 +145,6 @@ public class SeatBookingService {
             seatBooking.setBookedTime(bookingTime);
         }
 
-        this.seatBookingRepository.save(seatBooking);
+        return this.seatBookingRepository.save(seatBooking);
     }
 }

@@ -32,33 +32,33 @@ public class SeatService {
                         " and row id " + rowId + " not found."));
     }
 
-    public Seat addNewSeat(SeatDto seatDto) {
+    public Seat addNewSeat(Seat seat) {
 
-        if(seatDto.getSeatNumber() == null || seatDto.getSeatNumber() <= 0)
+        if(seat.getSeatId().getSeatNumber() == null || seat.getSeatId().getSeatNumber() <= 0)
             throw new BadRequestException("Missing seat number.");
 
-        if(seatDto.getCost() == null)
+        if(seat.getCost() == null)
             throw new BadRequestException("Missing cost.");
 
-        if(seatDto.getRowNumber() == null || seatDto.getRowNumber().isEmpty())
+        if(seat.getSeatId().getRowNumber() == null || seat.getSeatId().getRowNumber().isEmpty())
             throw new BadRequestException("Missing row number.");
 
         boolean isExist = this.repository.existsById(SeatId.builder()
-                .rowNumber(seatDto.getRowNumber())
-                .seatNumber(seatDto.getSeatNumber())
+                .rowNumber(seat.getSeatId().getRowNumber())
+                .seatNumber(seat.getSeatId().getSeatNumber())
                 .build());
 
         if(isExist){
-            throw new BadRequestException("The seat number " + seatDto.getSeatNumber() +
-                    " and row number " + seatDto.getRowNumber() + " already existed");
+            throw new BadRequestException("The seat number " + seat.getSeatId().getSeatNumber() +
+                    " and row number " + seat.getSeatId().getRowNumber() + " already existed");
         }
 
         return this.repository.save(Seat.builder()
                 .seatId(SeatId.builder()
-                        .rowNumber(seatDto.getRowNumber())
-                        .seatNumber(seatDto.getSeatNumber())
+                        .rowNumber(seat.getSeatId().getRowNumber())
+                        .seatNumber(seat.getSeatId().getSeatNumber())
                         .build())
-                .cost(seatDto.getCost())
+                .cost(seat.getCost())
                 .build());
     }
 
@@ -77,8 +77,7 @@ public class SeatService {
         this.repository.deleteById(seatId);
     }
 
-    public void updateSeat(String rowId, Integer seatNumber, String newRowId, Integer newSeatNumber, BigDecimal newCost) {
-
+    public Seat updateSeat(String rowId, Integer seatNumber, Seat newSeat){
         Seat seat = this.repository.findById(SeatId.builder()
                         .seatNumber(seatNumber)
                         .rowNumber(rowId)
@@ -86,24 +85,12 @@ public class SeatService {
                 .orElseThrow(()-> new BadRequestException(
                         "the row " + seatNumber + " or seat number " + rowId + " does not exists"));
 
-        if(newRowId != null &&
-                !newRowId.isEmpty() &&
-                !Objects.equals(newRowId, rowId)){
-            seat.getSeatId().setRowNumber(newRowId);
+        if(newSeat.getCost() != null &&
+                newSeat.getCost() != seat.getCost()){
+            seat.setCost(newSeat.getCost());
         }
 
-        if(newSeatNumber != null &&
-                newSeatNumber > 0 &&
-                newSeatNumber != seatNumber){
-            seat.getSeatId().setSeatNumber(newSeatNumber);
-        }
-
-        if(newCost != null &&
-                newCost != seat.getCost()){
-            seat.setCost(newCost);
-        }
-
-        this.repository.save(seat);
+        return this.repository.save(seat);
 
     }
 

@@ -2,7 +2,6 @@ package com.example.booking.screening;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.auditorium.AuditoriumRepository;
-import com.example.booking.exception.AuditoriumNotFoundException;
 import com.example.booking.exception.BadRequestException;
 import com.example.booking.exception.ScreeningNotFoundException;
 import com.example.booking.movie.Movie;
@@ -30,7 +29,7 @@ public class ScreeningService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Screening> getScreening() {
+    public List<Screening> getScreenings() {
         return this.screeningRepository.findAll();
     }
 
@@ -67,12 +66,9 @@ public class ScreeningService {
 
     public Screening getScreeningById(Long screeningId) {
 
-        boolean isExists = this.screeningRepository.existsById(screeningId);
-        if(!isExists)
-            throw new ScreeningNotFoundException(
-                    "id " + screeningId + " does not exist for screening table.");
-
-        return this.screeningRepository.getById(screeningId);
+        return this.screeningRepository.findById(screeningId)
+                .orElseThrow(() -> new ScreeningNotFoundException(
+                        "id " + screeningId + " does not exist for screening table."));
     }
 
     public void deleteScreening(Long screeningId) {
@@ -85,7 +81,11 @@ public class ScreeningService {
         this.screeningRepository.deleteById(screeningId);
     }
 
-    public void updateScreening(Long screeningId, Long showTime, Long movieId, Long auditoriumId) {
+    public Screening updateScreening(Long screeningId, ScreeningDto screeningDto) {
+
+        Long showTime = screeningDto.getShowTime();
+        Long movieId = screeningDto.getMovieId();
+        Long auditoriumId = screeningDto.getAuditoriumId();
 
         Movie movie;
         Auditorium auditorium;
@@ -132,7 +132,7 @@ public class ScreeningService {
         screening.setAuditorium(auditorium);
         screening.setShowTime(newShowTime);
 
-        this.screeningRepository.save(screening);
+        return this.screeningRepository.save(screening);
 
     }
 }

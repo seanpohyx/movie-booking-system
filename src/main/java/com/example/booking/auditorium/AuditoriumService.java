@@ -44,13 +44,18 @@ public class AuditoriumService {
 
     }
 
-    public void updateAuditorium(Long id, Integer numberOfSeats) {
+    public Auditorium updateAuditorium(Long id, AuditoriumDto auditoriumDto) {
 
         Auditorium auditorium = this.repository.findById(id).orElseThrow(
                 ()-> new BadRequestException("Auditorium with Id " + id + " does not exists"));
 
-        auditorium.setNumberOfSeats(numberOfSeats);
-        this.repository.save(auditorium);
+        Integer numberOfSeats = auditoriumDto.getNumberOfSeats();
+
+        if(numberOfSeats != null && numberOfSeats > 0) {
+            auditorium.setNumberOfSeats(numberOfSeats);
+        }
+
+        return this.repository.save(auditorium);
 
     }
 }

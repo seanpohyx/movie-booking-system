@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class MovieService {
     }
 
     @Transactional
-    public Movie updateMovie(Long id, Movie newMovie) {
+    public Movie updateMovie(Long id, MovieDto movieDto) {
 
         long epochTimeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC.of("+08:00"));
 
@@ -55,9 +56,48 @@ public class MovieService {
                 ()-> new BadRequestException(
                         "Movie with Id " + id + " does not exists"));
 
-        newMovie.setMovieId(id);
-        newMovie.setUpdatedDateTime(epochTimeNow);
-        return this.repository.save(newMovie);
+        Integer duration = movieDto.getDuration();
+        LocalDate startDate = movieDto.getStartDate();
+        LocalDate endDate = movieDto.getEndDate();
+        String title = movieDto.getTitle();
+        String casts = movieDto.getCasts();
+        String description = movieDto.getDescription();
+
+        if(title != null &&
+                title.length() > 0){
+            movie.setTitle(title);
+        }
+
+        if(description != null &&
+                description.length() > 0 &&
+                !Objects.equals(movie.getDescription(), description)){
+            movie.setDescription(description);
+        }
+
+        if(duration != null &&
+                duration > 0 &&
+                duration != movie.getDuration()){
+            movie.setDuration(duration);
+        }
+
+        if(casts != null &&
+                casts.length() > 0 &&
+                !Objects.equals(movie.getCasts(), casts)){
+            movie.setCasts(casts);
+        }
+
+        if(startDate != null &&
+                !movie.getStartDate().equals(startDate)){
+            movie.setStartDate(startDate);
+        }
+
+        if(endDate != null &&
+                !movie.getEndDate().equals(endDate)){
+            movie.setEndDate(endDate);
+        }
+
+        movie.setUpdatedDateTime(epochTimeNow);
+        return this.repository.save(movie);
 
     }
 

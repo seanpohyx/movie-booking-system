@@ -1,7 +1,5 @@
 package com.example.booking.screening;
 
-import com.example.booking.movie.Movie;
-import com.example.booking.movie.MovieDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ public class ScreeningController {
 
     @GetMapping
     public ResponseEntity<List<ScreeningDto>> getScreening(){
-        return ResponseEntity.ok().body(this.service.getScreening().stream()
+        return ResponseEntity.ok().body(this.service.getScreenings().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
     }
@@ -44,9 +41,6 @@ public class ScreeningController {
         try {
             return ResponseEntity.created(uri).body(convertToDTO(this.service.addScreening(screeningDto)));
         }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
-        }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
         }
@@ -54,13 +48,11 @@ public class ScreeningController {
 
     @PutMapping(path = "{screeningId}")
     public ResponseEntity<ScreeningDto> updateScreening(@PathVariable Long screeningId,
-                                @RequestParam(required = false) Long showTime,
-                                @RequestParam(required = false) Long movieId,
-                                @RequestParam(required = false) Long auditoriumId){
+                                                        @RequestBody ScreeningDto screeningDto){
 
         try {
-            this.service.updateScreening(screeningId, showTime, movieId, auditoriumId);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok()
+                    .body(convertToDTO(this.service.updateScreening(screeningId, screeningDto)));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
@@ -72,9 +64,6 @@ public class ScreeningController {
         try{
             this.service.deleteScreening(screeningId);
             return ResponseEntity.noContent().build();
-        }
-        catch (IllegalStateException e){
-            return ResponseEntity.badRequest().build();
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();

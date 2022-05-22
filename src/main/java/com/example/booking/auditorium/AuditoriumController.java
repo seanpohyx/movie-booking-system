@@ -29,7 +29,7 @@ public class AuditoriumController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AuditoriumDto>> getAuditorium(){
+    public ResponseEntity<List<AuditoriumDto>> getAuditoriums(){
         return ResponseEntity.ok().body(
                 this.service.getAuditoriums().stream()
                 .map(this::convertToDTO)
@@ -37,23 +37,30 @@ public class AuditoriumController {
     }
 
     @PostMapping
-    public ResponseEntity<AuditoriumDto> addAuditorium(@RequestBody AuditoriumDto postDto){
+    public ResponseEntity<AuditoriumDto> addAuditorium(@RequestBody AuditoriumDto auditoriumDto){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/auditorium").toUriString());
-        return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewAuditorium(convertToEntity(postDto))));
+        return ResponseEntity.created(uri).body(convertToDTO(this.service.addNewAuditorium(convertToEntity(auditoriumDto))));
     }
 
     @DeleteMapping(path = "{auditoriumId}")
-    public void removeAuditorium(@PathVariable("auditoriumId") Long id){
-        this.service.deleteAuditorium(id);
+    public ResponseEntity removeAuditorium(@PathVariable("auditoriumId") Long id){
+
+        try{
+            this.service.deleteAuditorium(id);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping(path="{auditoriumId}")
     public ResponseEntity<AuditoriumDto> updateAuditorium(
             @PathVariable("auditoriumId") Long id,
-            @RequestParam(required = true) Integer numberOfSeats) {
+            @RequestBody AuditoriumDto auditoriumDto) {
         try {
-            this.service.updateAuditorium(id, numberOfSeats);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok()
+                    .body(convertToDTO(this.service.updateAuditorium(id, auditoriumDto)));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();

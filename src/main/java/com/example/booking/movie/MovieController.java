@@ -67,7 +67,7 @@ public class MovieController {
 
         try {
             return ResponseEntity.ok()
-                    .body(convertToDTO(this.service.updateMovie(movieId, convertToEntity(movieDto))));
+                    .body(convertToDTO(this.service.updateMovie(movieId, movieDto)));
         }
         catch (Exception e){
             return ResponseEntity.internalServerError().build();
