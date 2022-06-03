@@ -2,7 +2,7 @@
 ## GET /api/v1/seatAuditorium
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "auditoriumId": 1,
@@ -17,7 +17,7 @@ Response body:
 ## GET /api/v1/seatAuditorium/{rowId}/{seatNumber}/{auditoriumId}
 Response: 200
 Response body:
-```json
+```markdown
 {
   "auditoriumId": 1,
   "seatNumber": 10,
@@ -27,7 +27,7 @@ Response body:
 ## POST /api/v1/seatAuditorium
 Response: 201
 Request body:
-```json
+```markdown
 {
   "auditoriumId": 1,
   "seatNumber": 10,

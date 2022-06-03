@@ -2,7 +2,7 @@
 ## GET /api/v1/seatbooking
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "seatBookingId": 1,
@@ -21,7 +21,7 @@ Response body:
 ## GET /api/v1/seatbooking/{seatBookingId}
 Response: 200
 Response body:
-```json
+```markdown
 {
   "seatBookingId": 1,
   "bookedTime": 1649327400000,
@@ -35,7 +35,7 @@ Response body:
 ## POST /api/v1/seatbooking
 Response: 201
 Request body:
-```json
+```markdown
 {
   "bookedTime": 1649327400000, #epoch time
   "auditoriumId": 1,
@@ -48,7 +48,7 @@ Request body:
 ## PUT /api/v1/seatbooking/{seatBookingId}
 Response: 200
 Request body:
-```json
+```markdown
 {
   "bookedTime": 1649327400000, #epoch time
   "auditoriumId": 1,

@@ -15,7 +15,7 @@ This overview captures the relationship between the different entities and the o
 
 ![Database Design](./design/movie_booking.jpg)
 
-# Installation
+# Run
 ```Bash
 docker-compose up -d
 ```

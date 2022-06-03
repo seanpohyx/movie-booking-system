@@ -2,7 +2,7 @@
 ## GET /api/v1/screening
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "screeningId": 1,
@@ -18,7 +18,7 @@ Response body:
 ## GET /api/v1/screening/{screeningId}
 Response: 200
 Response body:
-```json
+```markdown
 {
   "screeningId": 1,
   "showTime": 1649500200000,
@@ -29,7 +29,7 @@ Response body:
 ## POST /api/v1/screening
 Response: 201
 Request body:
-```json
+```markdown
 {
   "showTime": 1649500200000, #epoch time
   "movieId": 1, #long
@@ -39,7 +39,7 @@ Request body:
 ## PUT /api/v1/screening/{screeningId}
 Response: 200
 Request body:
-```json
+```markdown
 {
   "showTime": 1649500200000,
   "movieId": 1,

@@ -2,7 +2,7 @@
 ## GET /api/v1/movie
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "movieId": 1,
@@ -23,7 +23,7 @@ Response body:
 ## GET /api/v1/movie/{movieId}
 Response: 200
 Response body:
-```json
+```markdown
 {
     "movieId": 1,
     "title": "The batman",
@@ -39,7 +39,7 @@ Response body:
 ## GET /api/v1/movie/nowShowing
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "movieId": 1,
@@ -60,7 +60,7 @@ Response body:
 ## POST /api/v1/movie
 Response: 201
 Request body:
-```json
+```markdown
 {
     "title": "String",
     "description": "String",
@@ -73,7 +73,7 @@ Request body:
 ## PUT /api/v1/movie/{movieId}
 Response: 200
 Request body:
-```json
+```markdown
 {
     "title": "String",
     "description": "String",

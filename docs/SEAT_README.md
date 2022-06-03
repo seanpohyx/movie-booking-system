@@ -2,7 +2,7 @@
 ## GET /api/v1/seat
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "cost": 10.90,
@@ -17,7 +17,7 @@ Response body:
 ## GET /api/v1/seat/{rowId}/{seatNumber}
 Response: 200
 Response body:
-```json
+```markdown
 {
     "cost": 10.90,
     "seatNumber": 10,
@@ -27,7 +27,7 @@ Response body:
 ## POST /api/v1/seat
 Response: 201
 Request body:
-```json
+```markdown
 {
   "cost": 10.90, #double
   "seatNumber": 10, #int
@@ -37,7 +37,7 @@ Request body:
 ## PUT /api/v1/seat/{rowId}/{seatNumber}
 Response: 200
 Request body:
-```json
+```markdown
 {
   "cost": 100.00 #double
 }

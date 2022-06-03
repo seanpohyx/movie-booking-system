@@ -2,7 +2,7 @@
 ## GET / auditorium
 Response: 200
 Response body:
-```json
+```markdown
 [
   {
     "auditoriumId": 1,
@@ -16,7 +16,7 @@ Response body:
 ## GET / auditorium / {auditoriumId}
 Response: 200
 Response body:
-```json
+```markdown
 {
     "auditoriumId": 1,
     "numberOfSeats": 15
@@ -25,7 +25,7 @@ Response body:
 ## POST / auditorium
 Response: 201
 Request body:
-```json
+```markdown
 {
   "numberOfSeats": 15 #int
 }
@@ -33,7 +33,7 @@ Request body:
 ## PUT / auditorium/ {auditoriumId}
 Response: 200
 Request body:
-```json
+```markdown
 {
   "numberOfSeats": 10 #int
 }
