@@ -1,12 +1,23 @@
 package com.example.booking.seatBooking;
 
-import com.example.booking.seatAuditorium.SeatAuditorium;
-import com.example.booking.screening.Screening;
 import com.example.booking.account.Account;
-import com.example.booking.seatAuditorium.SeatAuditoriumCK;
-import lombok.*;
+import com.example.booking.screening.Screening;
+import com.example.booking.seatAuditorium.SeatAuditorium;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Getter
@@ -42,9 +53,9 @@ public class SeatBooking {
 
     @ManyToOne
     @JoinColumns(value = {
-            @JoinColumn(name="seatNumber", referencedColumnName = "seatNumber", nullable = false, insertable = false, updatable = false),
-            @JoinColumn(name="auditoriumId", referencedColumnName = "auditoriumId", nullable = false, insertable = false, updatable = false),
-            @JoinColumn(name = "rowNumber", referencedColumnName = "rowNumber", nullable = false, insertable = false, updatable = false)
+            @JoinColumn(name="seatNumber", referencedColumnName = "seatNumber", nullable = false),
+            @JoinColumn(name="auditoriumId", referencedColumnName = "auditoriumId", nullable = false),
+            @JoinColumn(name = "rowNumber", referencedColumnName = "rowNumber", nullable = false)
     })
     private SeatAuditorium seatAuditorium;
 

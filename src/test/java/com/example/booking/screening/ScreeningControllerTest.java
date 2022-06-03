@@ -2,7 +2,7 @@ package com.example.booking.screening;
 
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.movie.Movie;
-import com.example.booking.shared.AppConfig;
+import com.example.booking.config.AppConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,6 @@ class ScreeningControllerTest {
     private ObjectMapper objectMapper;
 
     private Screening screening;
-
     private ZoneOffset OFFSET = ZoneOffset.UTC.of("+08:00");
     private LocalDateTime FIXED_DATETIME = LocalDateTime.of(2022, Month.MARCH, 01, 8, 00, 00);
 

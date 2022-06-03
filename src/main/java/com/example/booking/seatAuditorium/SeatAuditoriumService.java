@@ -76,8 +76,12 @@ public class SeatAuditoriumService {
                 .orElseThrow(()-> new BadRequestException(String.format("auditorium does not exist with auditoriumId: %s", seatAuditoriumDto.getAuditoriumId())));
 
         return this.seatAuditoriumRepository.save(SeatAuditorium.builder()
-                        .seat(seat)
-                        .auditorium(auditorium)
+                .id(SeatAuditoriumCK.builder()
+                        .auditoriumId(auditorium.getAuditoriumId())
+                        .seatId(seat.getSeatId())
+                        .build())
+                .seat(seat)
+                .auditorium(auditorium)
                 .build());
 
     }

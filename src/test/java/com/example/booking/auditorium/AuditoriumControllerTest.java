@@ -1,6 +1,6 @@
 package com.example.booking.auditorium;
 
-import com.example.booking.shared.AppConfig;
+import com.example.booking.config.AppConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +77,8 @@ class AuditoriumControllerTest {
 
         //when
         ResultActions response =
-                this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/auditorium/{auditoriumId}", auditoriumId));
+                this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/auditorium/{auditoriumId}", auditoriumId));
 
         //then
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -119,7 +120,8 @@ class AuditoriumControllerTest {
 
         //when
         ResultActions response =
-                this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/auditorium/{auditoriumId}", auditoriumId));
+                this.mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/v1/auditorium/{auditoriumId}", auditoriumId));
 
         //then
         response.andExpect(status().isNoContent())

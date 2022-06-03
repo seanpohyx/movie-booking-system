@@ -37,6 +37,8 @@ class ScreeningRepositoryTest {
     @BeforeEach
     void setUp() {
 
+        this.auditoriumRepository.deleteAll();
+
         long epochTimeNow = LocalDateTime.now().toEpochSecond(offset);
         long showTime = FIXED_DATETIME.toEpochSecond(offset);
 
@@ -70,8 +72,8 @@ class ScreeningRepositoryTest {
     void givenAuditoriumIdShowTimeDuration_whenExistsByAuditoriumIdAndShowTime_thenReturnScreening() {
 
         //init
-        Movie movie = this.movieRepository.findById(1L).orElseThrow(()-> new RuntimeException("movie does not exist"));
-        Auditorium auditorium = this.auditoriumRepository.findById(1L).orElseThrow(()-> new RuntimeException("auditorium does not exist"));;
+        Movie movie = this.movieRepository.findAll().get(0);
+        Auditorium auditorium = this.auditoriumRepository.findAll().get(0);
 
         //given
         long auditoriumId = auditorium.getAuditoriumId();
@@ -90,8 +92,8 @@ class ScreeningRepositoryTest {
     void givenAuditoriumIdShowTimeDuration_whenExistsByAuditoriumIdAndShowTime_thenReturnNull() {
 
         //init
-        Movie movie = this.movieRepository.findById(1L).orElseThrow(()-> new RuntimeException("movie does not exist"));
-        Auditorium auditorium = this.auditoriumRepository.findById(1L).orElseThrow(()-> new RuntimeException("auditorium does not exist"));;
+        Movie movie = this.movieRepository.findAll().get(0);
+        Auditorium auditorium = this.auditoriumRepository.findAll().get(0);
 
         //given
         long auditoriumId = auditorium.getAuditoriumId();

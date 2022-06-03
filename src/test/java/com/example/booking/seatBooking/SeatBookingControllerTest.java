@@ -8,13 +8,12 @@ import com.example.booking.seat.Seat;
 import com.example.booking.seat.SeatId;
 import com.example.booking.seatAuditorium.SeatAuditorium;
 import com.example.booking.seatAuditorium.SeatAuditoriumCK;
-import com.example.booking.shared.AppConfig;
+import com.example.booking.config.AppConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -275,8 +274,4 @@ class SeatBookingControllerTest {
                 .andExpect(jsonPath("$.accountId", is(accountId), Long.class))
                 .andExpect(jsonPath("$.screeningId", is(screeningId), Long.class));
     }
-
-
-
-
 }

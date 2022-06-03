@@ -1,7 +1,11 @@
 package com.example.booking.seatAuditorium;
 
 import com.example.booking.seat.SeatId;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Columns;
 
 import javax.persistence.Column;

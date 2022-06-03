@@ -1,15 +1,11 @@
 package com.example.booking.seat;
 
-import com.example.booking.auditorium.Auditorium;
-import com.example.booking.auditorium.AuditoriumDto;
-import com.example.booking.shared.AppConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.booking.config.AppConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -162,13 +158,12 @@ class SeatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(seatDto)));
 
+        //then
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.rowNumber", is(rowId)))
                 .andExpect(jsonPath("$.seatNumber", is(seatId)))
                 .andExpect(jsonPath("$.cost", is(newCost)));
-
-        //then
 
     }
 

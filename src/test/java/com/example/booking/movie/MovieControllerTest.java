@@ -1,6 +1,6 @@
 package com.example.booking.movie;
 
-import com.example.booking.shared.AppConfig;
+import com.example.booking.config.AppConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -117,7 +117,7 @@ class MovieControllerTest {
 
         //when
         ResultActions response =
-                this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie/latest"));
+                this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie/nowShowing"));
 
         //then
         response.andExpect(MockMvcResultMatchers.status().isOk())
@@ -160,7 +160,6 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.endDate", is(inputMovie.getEndDate().toString())));
 
     }
-
 
     @Test
     @DisplayName("Delete movie")

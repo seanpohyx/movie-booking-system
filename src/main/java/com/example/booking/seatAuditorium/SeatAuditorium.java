@@ -3,7 +3,11 @@ package com.example.booking.seatAuditorium;
 import com.example.booking.auditorium.Auditorium;
 import com.example.booking.seat.Seat;
 import com.example.booking.seatBooking.SeatBooking;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
