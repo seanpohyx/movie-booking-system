@@ -30,7 +30,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<Account> addAccount(@RequestBody Account account){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/accountt").toUriString());
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/account").toUriString());
         return ResponseEntity.created(uri).body(this.service.addNewAccount(account));
     }
 }
